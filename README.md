@@ -63,7 +63,7 @@ The BaseStats are as follows:
 - name: randomly allocated identifier
 - energy: gained by eating, used in moving and spawning
 - speed: how many squares can a Thing move
-- age: number of ticks the Thign has existed for
+- age: number of ticks the Thing has existed for
 - lineage: if a spawned Thing, this holds the parent(s) and spawn type
 - spawn threshold: energy level require to spawn
 - hunger: if a Thing hasn't eaten, this will go up, causes a Thing to Spin
@@ -76,7 +76,8 @@ Things have Factors (think: genes) that modify their interactions with the World
 - SpeedFactor: affects spped atwhich a Thing can move
 - SpinFactor: affects the direction a Thing will choose when it has to Spin
 - SpawnFactor: affects spawn threshold - spawn earlier or later.
-- LafeFactor: affects maximum lifespan.
+- FeedFactor: affects how much energy is gained from feeding
+- LifeFactor: affects maximum lifespan.
 - FissionFactor: affects when a Thing will spawn by Fission
 - FusionFactor: affects when a Thing will spawn by Fusion
 - HungerFactor: affects hunger - may allow Thing to travel further without food
@@ -95,8 +96,73 @@ Traits are binary and are decided when a LiveStat reaches a certain limit (TBD)
 - FissionTrait: whether a Thing prefers to spawn by Fission
 - FusionTrait: whether a Thing prefers to spawn by Fusion
 
+### Spawning
 
+Spawning is how Things propagate. There are two methods of spawning, Fission and Fusion.
 
+#### Fission
+
+Fission is when a Thing divides in two. This occus under the following conditions:
+- if the FissionTrait is positive.
+- if has sufficient energy to spawn (energy * SpanwFactor) > spawn threshold 
+- is not in contact with a Thing in its surrounding spaces
+
+Fission produces a child with the following:
+
+**BaseStats**
+- name: new random name
+- energy: 1/2 of the parent Thing rounded down
+- speed: same as parent
+- age: set to 0
+- lineage: 'parent lineage => parent name'
+- spawn threshold: same as parent
+- hunger: 0
+- lifespan: same as parent
+
+**Factors**
+
+The Factors will be modified in a random direction by the parent DrfitFactor
+
+**Traits**
+
+The child will have its Traits recalculated from the LiveStats.
+
+#### Fusion
+
+Fusion is when two Things fuse to produce two new offspring. After Fusion, the parent Things go their merry ways.  Fusion occurs under the following conditions:
+- if both Things FusionTraits are postive.
+- if both Things have the same ThingTrait.
+- if both Things have sufficient enrgy to spawn (energy * spawnFactor) > spawn threshold
+- if both Things are touching, i.e. are in each others surrnding squares.
+
+Fusion produces two child Things with the following stats:
+
+**BaseStats**
+- name: new random name
+- energy: 1/4 of the sume of parents energy rounded down
+- speed: average of parents
+- age: set to 0
+- lineage: 'parent lineage => parent name 1 + parent name 2'
+- spawn threshold: average of parents
+- hunger: 0
+- lifespan: average of parents
+
+**Factors**
+
+The Factors are randomly picked from the parents, then modified in a random direction by the other parent DriftFactor, use opposite values for the other child.
+
+**Traits**
+
+The child will have its Traits recalculated from the LiveStats.
+
+### Feeding
+
+Things will eat when their hunger stat - how does this bit work? TODO
+If a Thing is on a square with some Stuff, and it has the StuffTrait, it will eat the Stuff and gain the total Stuff energy -1 modified by the FeedFactor.
+
+If a Thing is on a square next to another Thing
+
+### Movement
 
 
 
