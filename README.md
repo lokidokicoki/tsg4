@@ -45,8 +45,58 @@ It comes in 3 flavours:
 - DryGack: its yellow and hot. DryGackStuff grows here. Increase energy cost to move.
 - BadGack: its red and spicy. No Stuff grows here. Mutagenic. Rare.
 
-Things can acquire Mutations through spawning or coming into contact with BadGack.
+Things have their Factors jumbled, and can acquire Traits, through spawning or coming into contact with BadGack.
 
 ## Things
 
-Things are critters, gribblies, or creatures. They are move around the world and iniitally eat Stuff.
+Things are critters, gribblies, or creatures. They are move around the world and (initially) can only eat Stuff and spawn new Things. 
+
+They have a single eye with a 90 degree viewing angle and can see at least 1 space ahead of them. This allows them to decide where to go.
+
+Things gain energy as when they eat Stuff (and potentially other Things), this energy powers their movement and spawning.
+
+### Stats
+
+Things have Stats, these come in 2 forms, Base and Live (calculated from Base and Factors). 
+
+The BaseStats are as follows:
+- name: randomly allocated identifier
+- energy: gained by eating, used in moving and spawning
+- speed: how many squares can a Thing move
+- age: number of ticks the Thign has existed for
+- lineage: if a spawned Thing, this holds the parent(s) and spawn type
+- spawn threshold: energy level require to spawn
+- hunger: if a Thing hasn't eaten, this will go up, causes a Thing to Spin
+- lifespan: how long a Thing can live for before it dies of natural causes.
+
+### Factors
+
+Things have Factors (think: genes) that modify their interactions with the World and can confer new Traits:
+- DriftFactor: affects child Thing Factors during spawning
+- SpeedFactor: affects spped atwhich a Thing can move
+- SpinFactor: affects the direction a Thing will choose when it has to Spin
+- SpawnFactor: affects spawn threshold - spawn earlier or later.
+- LafeFactor: affects maximum lifespan.
+- FissionFactor: affects when a Thing will spawn by Fission
+- FusionFactor: affects when a Thing will spawn by Fusion
+- HungerFactor: affects hunger - may allow Thing to travel further without food
+- No/Wet/DryGackFactor: affect how well a Thing can tolerate a Gack type.
+- ThingFactor: affects how a Thing feels about other Things, friend or food?
+- StuffFactor: affects how a Thing feels about Stuff, food or bleurgh?
+
+### Traits
+
+Traits determine the actions a Thing will take, what Gack types it prefers and food preferences etc.
+Traits are binary and are decided when a LiveStat reaches a certain limit (TBD)
+
+- No/Wet/DryGackTrait: which Gack type the Things prefers to inhabit.
+- ThingTrait: whether a Thing prefers to eat Things
+- StuffTrait: whether a Thing likes to eat Stuff
+- FissionTrait: whether a Thing prefers to spawn by Fission
+- FusionTrait: whether a Thing prefers to spawn by Fusion
+
+
+
+
+
+
