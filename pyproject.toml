@@ -19,8 +19,8 @@ mypy = "^1.4.1"
 [tool.black]
 line_length = 100
 
-[fool.flake8]
-line-length=100
+[tool.pylint]
+max-line-length=100
 
 [build-system]
 requires = ["poetry-core"]
