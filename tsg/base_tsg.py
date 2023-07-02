@@ -15,7 +15,7 @@ class BaseTSG:
         self.row = row
         self.col = col
         self.color = color
-        self.dead = False  # is this instnace alive or dead
+        self.dead = False  # is this instance alive or dead
         self.name = name
 
     def draw(self):

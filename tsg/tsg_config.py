@@ -10,3 +10,5 @@ class TSGConfig:
     world_width: int
     world_height: int
     stuff_chance: int
+    gack_chance: int
+    gack_size: int
