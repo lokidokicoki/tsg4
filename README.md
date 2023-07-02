@@ -65,12 +65,11 @@ Things have Stats, these come in 2 forms, Base and Live (calculated from Base an
 The BaseStats are as follows:
 
 - name: randomly allocated identifier
-- energy: gained by eating, used in moving and spawning
+- energy: gained by eating, used in moving and spawning, has a maximum value (TBD). If it drop to 0, the Thing is dead and removed from the World.
 - speed: how many squares can a Thing move
 - age: number of ticks the Thing has existed for
 - lineage: if a spawned Thing, this holds the parent(s) and spawn type
 - spawn threshold: energy level require to spawn
-- hunger: if a Thing hasn't eaten, this will go up, causes a Thing to Spin
 - lifespan: how long a Thing can live for before it dies of natural causes.
 
 ### Factors
@@ -85,7 +84,7 @@ Things have Factors (think: genes) that modify their interactions with the World
 - LifeFactor: affects maximum lifespan.
 - FissionFactor: affects when a Thing will spawn by Fission
 - FusionFactor: affects when a Thing will spawn by Fusion
-- HungerFactor: affects hunger - may allow Thing to travel further without food
+- HungerFactor: affects the urge to eat
 - No/Wet/DryGackFactor: affect how well a Thing can tolerate a Gack type.
 - ThingFactor: affects how a Thing feels about other Things, friend or food?
 - StuffFactor: affects how a Thing feels about Stuff, food or bleurgh?
@@ -123,12 +122,14 @@ Fission produces a child with the following:
 - age: set to 0
 - lineage: 'parent lineage => parent name'
 - spawn threshold: same as parent
-- hunger: 0
 - lifespan: same as parent
 
 **Factors**
 
-The Factors will be modified in a random direction by the parent DriftFactor
+The Factors may be modified in a random direction by the parent DriftFactor
+
+For each factor of the parent, drift occurs when a random number between 0 and 1 is greater that the DriftFactor. 
+This will result in the DriftFactor being either added or subtracted from the parent Factor. This value is then applied to the child Thing.
 
 **Traits**
 
@@ -153,12 +154,11 @@ Fusion produces two child Things with the following stats:
 - age: set to 0
 - lineage: 'parent lineage => parent name 1 + parent name 2'
 - spawn threshold: average of parents
-- hunger: 0
 - lifespan: average of parents
 
 **Factors**
 
-The Factors are randomly picked from the parents, then modified in a random direction by the other parent DriftFactor, use opposite values for the other child.
+The Factors are randomly picked from the parents, and maybe modified in a random direction by the other parent DriftFactor, use opposite values for the other child.
 
 **Traits**
 
@@ -166,9 +166,26 @@ The child will have its Traits recalculated from the LiveStats.
 
 ### Feeding
 
-Things will eat when their hunger stat - how does this bit work? TODO
-If a Thing is on a square with some Stuff, and it has the StuffTrait, it will eat the Stuff and gain the total Stuff energy -1 modified by the FeedFactor.
+Things will want to eat when their energy goes below a limit. That limit is the max energy modified by the Thing's HungerFactor.
 
-If a Thing is on a square next to another Thing
+If a Thing is on a square with some Stuff it will eat the Stuff under this conditions:
+- it has the StuffTrait,
+- it is hungry
+The Thing will gain the total Stuff energy -1 modified by the FeedFactor rounded down.
+
+If a Thing is on a square next to another Thing (directly in front of it) and it has the ThingTrait, it will eat the other Thing.
+The Thing will gain the prey Things energy modified by the FeedFactor rounded down. The prey Ting is dead and will be removed from the World.
+
+### Senses
+
+Things can see the square directly in front of them, according to their last direction of travel.
 
 ### Movement
+
+Things can move in one of 8 directions. The initial move direction is randomly picked.
+Things move at the speed of 1 square per tick, this is modified by their SpeedFactor rounded down.
+Moving depletes the Things energy at 1 energy per square modfied by the SpeedFactor rounded up.
+Things will continue to move in the same direction until they hit an obstacle (such as the edge of the World, or some Gack they are intolerant of) or they decide to spin (choose a new random direction modified by SpinFactor) due to hunger.
+Things can only move into a square not occupied by another Thing, this will cause them to spin.
+
+
