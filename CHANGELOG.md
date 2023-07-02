@@ -1,3 +1,9 @@
+## v0.2.0 (2023-07-02)
+
+### Feat
+
+- split code into files, add config file
+
 ## v0.1.0 (2023-07-02)
 
 ### Feat
