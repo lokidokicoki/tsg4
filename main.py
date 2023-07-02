@@ -45,9 +45,12 @@ class Stuff(BaseTSG):
     def process(self, grow: bool):
         if grow:
             self.energy += 1
-
             self.color.g = min(200, 10 * self.energy)
             # print(str(self))
+
+        # spawn a new stuff
+        if self.energy > 200:
+            print("spawn")
 
         self.draw()
 
