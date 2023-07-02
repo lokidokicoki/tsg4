@@ -49,13 +49,37 @@ class Stuff(BaseTSG):
             # print(str(self))
 
         # spawn a new stuff
-        if self.energy > 200:
+        if self.energy > 20:
             print("spawn")
 
         self.draw()
 
     def draw(self):
         pg.draw.circle(self.surface, self.color, self.pos, self.size)
+
+
+class StuffManager:
+    def __init__(self, surface: pg.Surface, cell_dims: Tuple[int, int]):
+        self.surface = surface
+        self.cell_dims = cell_dims
+        self.place_chance = 3
+        self.stuffs_matrix: List[List[Stuff]] = [
+            [None for col in range(world_size[0])] for row in range(world_size[1])
+        ]
+
+    def place_stuff(self):
+        for row in range(world_size[0]):
+            for col in range(world_size[1]):
+                can_place = random.randint(0, 3)
+                if can_place == self.place_chance:
+                    self.stuffs_matrix[row][col] = Stuff(self.surface, row, col, self.cell_dims[0])
+
+    def process_stuff(self, grow: bool = False):
+        for row in range(world_size[0]):
+            for col in range(world_size[1]):
+                stuff = self.stuffs_matrix[row][col]
+                if stuff:
+                    stuff.process(grow)
 
 
 class Game:
@@ -67,29 +91,12 @@ class Game:
         self.loop = True
         self.cell_dims = evaluate_dims()
         self.last_update = 0
-        self.stuffs_matrix: List[List[Stuff]] = [
-            [None for col in range(world_size[0])] for row in range(world_size[1])
-        ]
-
-    def place_stuff(self):
-        for row in range(world_size[0]):
-            for col in range(world_size[1]):
-                can_place = random.randint(0, 3)
-                if can_place == 3:
-                    self.stuffs_matrix[row][col] = Stuff(self.surface, row, col, self.cell_dims[0])
-                    print(str(self.stuffs_matrix[row][col]))
-                else:
-                    self.stuffs_matrix[row][col] = None
-
-    def process_stuff(self, grow: bool = False):
-        for row in range(world_size[0]):
-            for col in range(world_size[1]):
-                stuff = self.stuffs_matrix[row][col]
-                if stuff:
-                    stuff.process(grow)
+        self.num_ticks = 0
+        self.font = pg.font.SysFont("Arial", 20)
+        self.stuff_manager = StuffManager(self.surface, self.cell_dims)
 
     def main(self):
-        self.place_stuff()
+        self.stuff_manager.place_stuff()
         while self.loop:
             self.main_loop()
 
@@ -104,6 +111,7 @@ class Game:
         if now - self.last_update > UPDATE_PERIOD:
             do_actions = True
             self.last_update = now
+            self.num_ticks += 1
 
         # render alternating grid
         for row in range(world_size[0]):
@@ -116,7 +124,11 @@ class Game:
                 )
                 pg.draw.rect(self.surface, (40, 40, 40), rect)
 
-        self.process_stuff(do_actions)
+        self.stuff_manager.process_stuff(do_actions)
+
+        tick_text = f"Tick: {self.num_ticks}"
+        ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))
+        self.surface.blit(ren, (10, 10))
 
         # handle events
         for event in pg.event.get():
