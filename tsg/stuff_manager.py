@@ -15,11 +15,11 @@ class StuffManager(BaseManager):
     - pokes stuff to process their actions
     """
 
-    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Tuple[int, int]):
+    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Tuple[float, float]):
         super().__init__(config, surface, cell_dims)
         self.place_chance = self.config.stuff_chance
 
-    def place_stuff(self):
+    def place(self):
         """
         Initial World with randomly placed Stuff
         """
@@ -27,9 +27,9 @@ class StuffManager(BaseManager):
             for col in range(self.config.world_height):
                 can_place = random.randint(0, self.config.stuff_chance)
                 if can_place == self.place_chance:
-                    self.add_stuff(row, col)
+                    self.add(row, col)
 
-    def add_stuff(self, row: int, col: int):
+    def add(self, row: int, col: int):
         """
         Add a new Stuff instance to the matrix
         :param row: which row
@@ -38,7 +38,7 @@ class StuffManager(BaseManager):
         self.counter += 1
         self.matrix[row][col] = Stuff(self, self.surface, row, col, self.cell_dims[0])
 
-    def cull_stuff(self):
+    def cull(self):
         """
         Cull Stuff marked as 'dead' from the matrix
         """
@@ -48,7 +48,7 @@ class StuffManager(BaseManager):
                 if stuff and stuff.dead:
                     self.remove(row, col)
 
-    def process_stuff(self, do_actions: bool = False):
+    def process(self, do_actions: bool = False):
         """
         Check each cell in matrix, if a Stuff is present,
         tell it to process its actions

@@ -20,7 +20,7 @@ class Stuff(BaseTSG):
             (size * ((col * size) // size)) + self.size,
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}, cell: ({self.row},{self.col}), age: {self.age}, energy: {self.energy}"
 
     def process(self, do_actions: bool):
@@ -45,7 +45,7 @@ class Stuff(BaseTSG):
             has_free_cell, row, col = self.manager.get_next_free_cell(self.row, self.col)
 
             if has_free_cell:
-                self.manager.add_stuff(row, col)
+                self.manager.add(row, col)
                 self.energy = int(self.energy / 2)
             else:
                 self.die(True)
