@@ -1,0 +1,60 @@
+import random
+from typing import List, Tuple
+
+import pygame as pg
+
+from tsg import BaseManager, Stuff, TSGConfig
+
+
+class StuffManager(BaseManager):
+    """
+    Manages the Stuff instances in the World.
+
+    - randomly places stuff at creation
+    - culls dead stuff
+    - pokes stuff to process their actions
+    """
+
+    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Tuple[int, int]):
+        super().__init__(config, surface, cell_dims)
+        self.place_chance = self.config.stuff_chance
+
+    def place_stuff(self):
+        """
+        Initial World with randomly placed Stuff
+        """
+        for row in range(self.config.world_width):
+            for col in range(self.config.world_height):
+                can_place = random.randint(0, self.config.stuff_chance)
+                if can_place == self.place_chance:
+                    self.add_stuff(row, col)
+
+    def add_stuff(self, row: int, col: int):
+        """
+        Add a new Stuff instance to the matrix
+        :param row: which row
+        :param col: which col
+        """
+        self.counter += 1
+        self.matrix[row][col] = Stuff(self, self.surface, row, col, self.cell_dims[0])
+
+    def cull_stuff(self):
+        """
+        Cull Stuff marked as 'dead' from the matrix
+        """
+        for row in range(self.config.world_width):
+            for col in range(self.config.world_height):
+                stuff = self.matrix[row][col]
+                if stuff and stuff.dead:
+                    self.remove(row, col)
+
+    def process_stuff(self, do_actions: bool = False):
+        """
+        Check each cell in matrix, if a Stuff is present,
+        tell it to process its actions
+        """
+        for row in range(self.config.world_width):
+            for col in range(self.config.world_height):
+                stuff = self.matrix[row][col]
+                if stuff:
+                    stuff.process(do_actions)
