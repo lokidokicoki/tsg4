@@ -128,7 +128,7 @@ Fission produces a child with the following:
 
 The Factors may be modified in a random direction by the parent DriftFactor
 
-For each factor of the parent, drift occurs when a random number between 0 and 1 is greater that the DriftFactor. 
+For each factor of the parent, drift occurs when a random number between 0 and 1 is greater that the DriftFactor.
 This will result in the DriftFactor being either added or subtracted from the parent Factor. This value is then applied to the child Thing.
 
 **Traits**
@@ -169,9 +169,10 @@ The child will have its Traits recalculated from the LiveStats.
 Things will want to eat when their energy goes below a limit. That limit is the max energy modified by the Thing's HungerFactor.
 
 If a Thing is on a square with some Stuff it will eat the Stuff under this conditions:
+
 - it has the StuffTrait,
 - it is hungry
-The Thing will gain the total Stuff energy -1 modified by the FeedFactor rounded down.
+  The Thing will gain the total Stuff energy -1 modified by the FeedFactor rounded down.
 
 If a Thing is on a square next to another Thing (directly in front of it) and it has the ThingTrait, it will eat the other Thing.
 The Thing will gain the prey Things energy modified by the FeedFactor rounded down. The prey Ting is dead and will be removed from the World.
@@ -187,5 +188,3 @@ Things move at the speed of 1 square per tick, this is modified by their SpeedFa
 Moving depletes the Things energy at 1 energy per square modfied by the SpeedFactor rounded up.
 Things will continue to move in the same direction until they hit an obstacle (such as the edge of the World, or some Gack they are intolerant of) or they decide to spin (choose a new random direction modified by SpinFactor) due to hunger.
 Things can only move into a square not occupied by another Thing, this will cause them to spin.
-
-

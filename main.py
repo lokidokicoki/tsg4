@@ -1,5 +1,5 @@
 """
-TSG4
+TSG4 - a little life simulation
 """
 from configparser import ConfigParser
 from typing import Tuple
@@ -29,16 +29,16 @@ class Game:
     """
 
     def __init__(self, config: TSGConfig):
-        self.config = config
         pg.init()
-        self.clock = pg.time.Clock()  # set to amx FPS
         pg.display.set_caption(TITLE)
+        self.config = config
+        self.clock = pg.time.Clock()  # set to max FPS
         self.surface = pg.display.set_mode((self.config.resolution_w, self.config.resolution_h))
-        self.loop = True
         self.cell_dims = evaluate_dims(
             (self.config.resolution_w, self.config.resolution_h),
             (self.config.world_width, self.config.world_height),
         )
+        self.loop = True
         self.last_update = 0
         self.num_ticks = 0
         self.font = pg.font.SysFont("Arial", 20)

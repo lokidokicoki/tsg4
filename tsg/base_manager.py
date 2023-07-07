@@ -1,8 +1,16 @@
+"""
+BaseManager - This looks after the various entities in the World
+
+The BaseManager is subclassed for the spefici entity types.
+"""
+from collections import namedtuple
 from typing import List, Optional, Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, TSGConfig
+from tsg import BaseTSG, Cell, TSGConfig
+
+NextFreeCell = namedtuple("NextFreeCell", "is_free row col")
 
 
 class BaseManager:
@@ -22,49 +30,57 @@ class BaseManager:
         self.wlim = len(self.matrix)
         self.hlim = len(self.matrix[0])
 
-    def get_next_free_cell(self, row, col) -> Tuple[bool, int, int]:
+    def get_next_free_cell(self, row, col) -> NextFreeCell:
         """
         Find the next empty cell in the matrix starting top left and moving clockwise
         """
         # check adjacent cells to passed row and col
         if (row - 1 >= 0) and (col - 1 >= 0) and self.matrix[row - 1][col - 1] is None:
-            return (True, row - 1, col - 1)
-        if (row - 1 >= 0) and self.matrix[row - 1][col] is None:
-            return (True, row - 1, col)
-        if (
+            next_free_cell = NextFreeCell(True, row - 1, col - 1)
+        elif (row - 1 >= 0) and self.matrix[row - 1][col] is None:
+            next_free_cell = NextFreeCell(True, row - 1, col)
+        elif (
             (row - 1 >= 0)
             and (col + 1 < self.config.world_height)
             and self.matrix[row - 1][col + 1] is None
         ):
-            return (True, row - 1, col + 1)
+            next_free_cell = NextFreeCell(True, row - 1, col + 1)
 
-        if (col - 1 >= 0) and self.matrix[row][col - 1] is None:
-            return (True, row, col - 1)
-        if (col + 1 < self.config.world_height) and self.matrix[row][col + 1] is None:
-            return (True, row, col + 1)
+        elif (col - 1 >= 0) and self.matrix[row][col - 1] is None:
+            next_free_cell = NextFreeCell(True, row, col - 1)
+        elif (col + 1 < self.config.world_height) and self.matrix[row][col + 1] is None:
+            next_free_cell = NextFreeCell(True, row, col + 1)
 
-        if (
+        elif (
             (row + 1 < self.config.world_width)
             and (col - 1 >= 0)
             and self.matrix[row + 1][col - 1] is None
         ):
-            return (True, row + 1, col - 1)
-        if (row + 1 < self.config.world_width) and self.matrix[row + 1][col] is None:
-            return (True, row + 1, col)
-        if (
+            next_free_cell = NextFreeCell(True, row + 1, col - 1)
+        elif (row + 1 < self.config.world_width) and self.matrix[row + 1][col] is None:
+            next_free_cell = NextFreeCell(True, row + 1, col)
+        elif (
             (row + 1 < self.config.world_width)
             and (col + 1 < self.config.world_height)
             and self.matrix[row + 1][col + 1] is None
         ):
-            return (True, row + 1, col + 1)
+            next_free_cell = NextFreeCell(True, row + 1, col + 1)
+        else:
+            next_free_cell = NextFreeCell(False, row, col)
 
-        return (False, row, col)
+        return next_free_cell
 
-    def add(self, row: int, col: int):
-        pass
+    def add(self, cell: Cell):
+        """
+        Add entity to World at specified row and column
+        """
 
-    def cull(self, row: int, col: int):
-        pass
+    def cull(self):
+        """
+        Cull entities in the World.
+
+        This flags them for later removal.
+        """
 
     def process(self, do_actions: bool = False):
         """
@@ -77,8 +93,8 @@ class BaseManager:
                 if tsg:
                     tsg.process(do_actions)
 
-    def remove(self, row: int, col: int):
+    def remove(self, cell: Cell):
         """
         Remove TSG instance from matrix
         """
-        self.matrix[row][col] = None
+        self.matrix[cell.row][cell.col] = None

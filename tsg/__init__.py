@@ -1,6 +1,7 @@
 """
 isort: skip_file
 """
+from .types import Cell
 from .base_tsg import BaseTSG
 from .tsg_config import TSGConfig
 from .base_manager import BaseManager

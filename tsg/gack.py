@@ -2,7 +2,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG
+from tsg import BaseTSG, Cell
 
 
 class Gack(BaseTSG):
@@ -10,18 +10,18 @@ class Gack(BaseTSG):
     Gack!
     """
 
-    def __init__(self, manager, surface, row: int, col: int, cell_dims: Tuple[float, float]):
-        super().__init__(surface, f"G{manager.counter}", row, col, pg.Color(0, 0, 100))
+    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+        super().__init__(surface, f"G{manager.counter}", cell, pg.Color(0, 0, 100))
         self.manager = manager
         self.rect = (
-            row * cell_dims[0],
-            col * cell_dims[1],
+            cell.row * cell_dims[0],
+            cell.col * cell_dims[1],
             cell_dims[0],
             cell_dims[1],
         )
 
     def __str__(self) -> str:
-        return f"{self.name}, cell: ({self.row},{self.col}), age: {self.age}, energy: {self.energy}"
+        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
 
     def process(self, do_actions: bool):
         self.draw()

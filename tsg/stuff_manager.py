@@ -1,9 +1,12 @@
+"""
+Manages the Stuff instances in the World.
+"""
 import random
 from typing import List, Tuple
 
 import pygame as pg
 
-from tsg import BaseManager, Stuff, TSGConfig
+from tsg import BaseManager, Cell, Stuff, TSGConfig
 
 
 class StuffManager(BaseManager):
@@ -27,16 +30,16 @@ class StuffManager(BaseManager):
             for col in range(self.config.world_height):
                 can_place = random.randint(0, self.config.stuff_chance)
                 if can_place == self.place_chance:
-                    self.add(row, col)
+                    self.add(Cell(row, col))
 
-    def add(self, row: int, col: int):
+    def add(self, cell: Cell):
         """
         Add a new Stuff instance to the matrix
         :param row: which row
         :param col: which col
         """
         self.counter += 1
-        self.matrix[row][col] = Stuff(self, self.surface, row, col, self.cell_dims[0])
+        self.matrix[cell.row][cell.col] = Stuff(self, self.surface, cell, int(self.cell_dims[0]))
 
     def cull(self):
         """
@@ -46,7 +49,7 @@ class StuffManager(BaseManager):
             for col in range(self.config.world_height):
                 stuff = self.matrix[row][col]
                 if stuff and stuff.dead:
-                    self.remove(row, col)
+                    self.remove(Cell(row, col))
 
     def process(self, do_actions: bool = False):
         """

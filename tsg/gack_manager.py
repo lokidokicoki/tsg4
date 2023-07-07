@@ -1,9 +1,12 @@
+"""
+Manages the placement of Gack instances in the World.
+"""
 import random
 from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseManager, Gack, TSGConfig
+from tsg import BaseManager, Cell, Gack, TSGConfig
 
 
 class GackManager(BaseManager):
@@ -30,13 +33,13 @@ class GackManager(BaseManager):
                     for gack_row in range(self.config.gack_size):
                         for gack_col in range(self.config.gack_size):
                             if row + gack_row < self.wlim and col + gack_col < self.hlim:
-                                self.add(row + gack_row, col + gack_col)
+                                self.add(Cell(row + gack_row, col + gack_col))
 
-    def add(self, row: int, col: int):
+    def add(self, cell: Cell):
         """
         Add a new Gack instance to the matrix
         :param row: which row
         :param col: which col
         """
         self.counter += 1
-        self.matrix[row][col] = Gack(self, self.surface, row, col, self.cell_dims)
+        self.matrix[cell.row][cell.col] = Gack(self, self.surface, cell, self.cell_dims)
