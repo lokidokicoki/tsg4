@@ -11,8 +11,9 @@ class Gack(BaseTSG):
     """
 
     def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
-        super().__init__(surface, f"G{manager.counter}", cell, pg.Color(0, 0, 100))
-        self.manager = manager
+        super().__init__(
+            manager, surface, f"G{manager.counters['G']}", cell, cell_dims, pg.Color(0, 0, 100)
+        )
         self.rect = (
             cell.x * cell_dims[0],
             cell.y * cell_dims[1],

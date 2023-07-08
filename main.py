@@ -6,7 +6,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import GackManager, StuffManager, ThingManager, TSGConfig
+from tsg import TSGConfig, World
 
 TITLE = "TSG4"
 
@@ -42,18 +42,18 @@ class Game:
         self.last_update = 0
         self.num_ticks = 0
         self.font = pg.font.SysFont("Arial", 20)
-        self.stuff_manager = StuffManager(self.config, self.surface, self.cell_dims)
-        self.gack_manager = GackManager(self.config, self.surface, self.cell_dims)
-        self.thing_manager = ThingManager(self.config, self.surface, self.cell_dims)
+        self.world = World(self.config, self.surface, self.cell_dims)
+        # self.gack_manager = GackManager(self.config, self.surface, self.cell_dims)
+        # self.thing_manager = ThingManager(self.config, self.surface, self.cell_dims)
 
     def main(self):
         """
         Main entry point and set up
         """
 
-        self.stuff_manager.place()
-        self.gack_manager.place()
-        self.thing_manager.place()
+        self.world.place()
+        # self.gack_manager.place()
+        # self.thing_manager.place()
         while self.loop:
             self.main_loop()
 
@@ -89,12 +89,14 @@ class Game:
                 )
                 pg.draw.rect(self.surface, (40, 40, 40), rect)
 
-        self.gack_manager.process(do_actions)
-        self.stuff_manager.cull()
-        self.stuff_manager.process(do_actions)
+        self.world.cull()
+        self.world.process(do_actions)
+        # self.gack_manager.process(do_actions)
+        # self.stuff_manager.cull()
+        # self.stuff_manager.process(do_actions)
 
-        self.thing_manager.cull()
-        self.thing_manager.process(do_actions)
+        # self.thing_manager.cull()
+        # self.thing_manager.process(do_actions)
 
         tick_text = f"Tick: {self.num_ticks}"
         ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))

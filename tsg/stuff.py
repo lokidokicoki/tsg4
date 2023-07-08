@@ -3,6 +3,8 @@ Stuff - this grows on the substrate of the World.
 It gains energy at a set rate, and will spawn new stuff in empty spaces next to it
 """
 
+from typing import Tuple
+
 import pygame as pg
 
 from tsg import BaseTSG, Cell
@@ -13,16 +15,17 @@ class Stuff(BaseTSG):
     Create a Stuff instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface, cell: Cell, size: int):
-        super().__init__(surface, f"S{manager.counter}", cell, pg.Color(0, 10, 0))
+    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+        super().__init__(
+            manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
+        )
         self.manager = manager
-        self.tile_size = size
-        self.size = size / 2
+        self.size = cell_dims[0] / 2
         self.lifespan = 50
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.pos = (
-            (size * ((cell.x * size) // size)) + self.size,
-            (size * ((cell.y * size) // size)) + self.size,
+            (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
+            (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
         )
 
     def __str__(self) -> str:
@@ -52,10 +55,10 @@ class Stuff(BaseTSG):
         """
         if self.energy > self.spawn_threshold:
             # check for free adjacent cellsin manager
-            next_free_cell = self.manager.get_next_free_cell(self.cell)
+            next_free_cell = self.manager.get_next_free_cell(self.cell, "S")
 
             if next_free_cell.is_free:
-                self.manager.add(next_free_cell)
+                self.manager.add(Stuff, next_free_cell)
                 self.energy = int(self.energy / 2)
             else:
                 self.die(True)
