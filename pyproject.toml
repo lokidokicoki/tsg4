@@ -28,6 +28,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.3.0"
+version = "0.4.0"
 tag_format = "v$version"
 
