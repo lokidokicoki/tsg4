@@ -42,13 +42,14 @@ class Thing(BaseTSG):
         )
         self.manager = manager
         self.size = cell_dims[0] / 2
-        self.lifespan = 50
+        self.lifespan = 150
+        self.energy = 50
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.pos = (
             (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
             (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
         )
-        self.facing = 0  #  random.randint(0, 7)
+        self.facing = random.randint(0, 7)
         self.eye_size = self.size * 0.1
         self.eye_color = pg.Color(200, 0, 0)
         self.has_moved = False
@@ -61,6 +62,8 @@ class Thing(BaseTSG):
             self.eat()
             self.spawn()
             self.die()
+            self.age += 1
+            self.energy -= 1
 
         self.draw()
 
@@ -83,13 +86,30 @@ class Thing(BaseTSG):
             # print(f"=> matrix post move {self.manager.matrix}")
 
     def eat(self):
-        pass
+        stuff = self.manager.matrix[self.cell.x][self.cell.y].get("S")
+
+        if stuff:
+            # how much energy do they have?
+            free_energy = stuff.energy - 1
+            self.energy += free_energy
+            stuff.energy = 1
 
     def spawn(self):
-        pass
+        if self.energy >= 60:
+            next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
-    def die(self):
-        pass
+            if next_free_cell.is_free:
+                new_thing = self.manager.add(Thing, next_free_cell)
+                new_energy = int(self.energy / 2)
+                new_thing.energy = new_energy
+                self.energy = new_energy
+
+    def die(self, force: bool = False):
+        if force or self.age > self.lifespan or self.energy <= 0:
+            self.dead = True
+
+        if self.dead:
+            self.color = pg.Color(255, 255, 0)
 
     def draw(self):
         draw_regular_polygon(self.surface, self.color, 8, self.size, self.pos)
