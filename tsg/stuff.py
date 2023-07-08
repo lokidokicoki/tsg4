@@ -67,6 +67,8 @@ class Stuff(BaseTSG):
         """
         You died
         """
+        if self.manager.matrix[self.cell.x][self.cell.y].get("G") is not None:
+            self.dead = True
         if force or self.age > self.lifespan:
             self.dead = True
 

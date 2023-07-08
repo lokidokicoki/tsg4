@@ -73,6 +73,9 @@ class Thing(BaseTSG):
             facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "T")
             # print(f" => move to - facing cell {facing_cell}")
             if facing_cell.is_free:
+                facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "G")
+
+            if facing_cell.is_free:
                 self.manager.move(self, facing_cell)
             else:
                 self.facing = random.randint(0, 7)

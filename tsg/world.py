@@ -6,10 +6,14 @@ from typing import List, Optional, Tuple, Type, Union
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, Gack, NextFreeCell, Stuff, Thing, TSGConfig
+from tsg import Cell, Gack, NextFreeCell, Stuff, Thing, TSGConfig
 
 
 class CellContent:
+    """
+    What is going on in a cell or the World grid
+    """
+
     def __init__(self, cell: Cell):
         self.thing: Optional[Thing] = None
         self.stuff: Optional[Stuff] = None
@@ -17,6 +21,9 @@ class CellContent:
         self.cell = cell
 
     def set(self, entity: Union[Thing, Stuff, Gack]):
+        """
+        Set the contents of a grid cell
+        """
         if isinstance(entity, Thing):
             self.thing = entity
         elif isinstance(entity, Stuff):
@@ -27,6 +34,9 @@ class CellContent:
             raise TypeError(f"Uknown entity type {entity}")
 
     def get(self, check_type: str):
+        """
+        Get the specific entity in a grid cell
+        """
         match check_type:
             case "T":
                 return self.thing
@@ -36,6 +46,9 @@ class CellContent:
                 return self.gack
 
     def remove(self, check_type: str):
+        """
+        Clear the specific entity in this grid cell
+        """
         match check_type:
             case "T":
                 self.thing = None
@@ -188,12 +201,18 @@ class World:
                     self.add(Thing, Cell(x, y))
 
     def move(self, thing: Thing, new_cell: Cell):
+        """
+        Move a Thing to a new cell
+        """
         self.remove(thing.cell, "T")
         self.matrix[new_cell.x][new_cell.y].set(thing)
         thing.cell = new_cell
         self.update_position(thing)
 
     def update_position(self, klass: Union[Thing, Stuff, Gack]):
+        """
+        Update the on screen positioin of a Thing
+        """
         klass.pos = (
             (klass.cell_dims[0] * ((klass.cell.x * klass.cell_dims[0]) // klass.cell_dims[0]))
             + klass.size,
