@@ -14,8 +14,8 @@ class Gack(BaseTSG):
         super().__init__(surface, f"G{manager.counter}", cell, pg.Color(0, 0, 100))
         self.manager = manager
         self.rect = (
-            cell.row * cell_dims[0],
-            cell.col * cell_dims[1],
+            cell.x * cell_dims[0],
+            cell.y * cell_dims[1],
             cell_dims[0],
             cell_dims[1],
         )
