@@ -5,6 +5,7 @@ It gains energy from eating, and will spawn new Things in empty spaces next to i
 
 import random
 from math import cos, pi, sin
+from typing import Tuple
 
 import pygame as pg
 
@@ -35,18 +36,19 @@ class Thing(BaseTSG):
     Create a Thing instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface, cell: Cell, size: int):
-        super().__init__(surface, f"T{manager.counter}", cell, pg.Color(100, 100, 100))
+    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+        super().__init__(
+            manager, surface, f"T{manager.counters['T']}", cell, cell_dims, pg.Color(100, 100, 100)
+        )
         self.manager = manager
-        self.size = size / 2
-        self.tile_size = size
+        self.size = cell_dims[0] / 2
         self.lifespan = 50
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.pos = (
-            (size * ((cell.x * size) // size)) + self.size,
-            (size * ((cell.y * size) // size)) + self.size,
+            (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
+            (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
         )
-        self.facing = random.randint(0, 7)
+        self.facing = 0  #  random.randint(0, 7)
         self.eye_size = self.size * 0.1
         self.eye_color = pg.Color(200, 0, 0)
         self.has_moved = False
@@ -67,15 +69,15 @@ class Thing(BaseTSG):
         check is cell in facing direction is clear, if so move into it
         """
         if not self.has_moved:
-            # print(f"Pre move {self.name}:f {self.facing}, c:{self.cell}")
-            facing_cell = self.manager.get_facing_cell(self.facing, self.cell)
+            # print(f"Pre move {self.name}: facing {self.facing}, c:{self.cell}")
+            facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "T")
             # print(f" => move to - facing cell {facing_cell}")
             if facing_cell.is_free:
                 self.manager.move(self, facing_cell)
             else:
                 self.facing = random.randint(0, 7)
             self.has_moved = True
-            # print(f"matrix post move {self.manager.matrix}")
+            # print(f"=> matrix post move {self.manager.matrix}")
 
     def eat(self):
         pass
