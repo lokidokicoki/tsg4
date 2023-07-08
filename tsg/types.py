@@ -10,8 +10,19 @@ class Cell:
     Defines a cell in the World
     """
 
-    row: int
-    col: int
+    x: int
+    y: int
+
+
+@dataclass
+class NextFreeCell:
+    """
+    Defines a cell in the World
+    """
+
+    is_free: bool
+    x: int
+    y: int
 
 
 @dataclass
