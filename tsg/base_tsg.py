@@ -35,6 +35,9 @@ class BaseTSG:
         self.pos = None
         self.size = cell_dims[0]
 
+    def __str__(self) -> str:
+        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
+
     def draw(self):
         """
         Draw entity in the world.

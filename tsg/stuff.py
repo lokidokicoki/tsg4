@@ -28,9 +28,6 @@ class Stuff(BaseTSG):
             (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
         )
 
-    def __str__(self) -> str:
-        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
-
     def process(self, do_actions: bool):
         super().process(do_actions)
 
