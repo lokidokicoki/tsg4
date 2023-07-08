@@ -6,7 +6,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import GackManager, StuffManager, TSGConfig
+from tsg import GackManager, StuffManager, ThingManager, TSGConfig
 
 TITLE = "TSG4"
 
@@ -44,6 +44,7 @@ class Game:
         self.font = pg.font.SysFont("Arial", 20)
         self.stuff_manager = StuffManager(self.config, self.surface, self.cell_dims)
         self.gack_manager = GackManager(self.config, self.surface, self.cell_dims)
+        self.thing_manager = ThingManager(self.config, self.surface, self.cell_dims)
 
     def main(self):
         """
@@ -52,6 +53,7 @@ class Game:
 
         self.stuff_manager.place()
         self.gack_manager.place()
+        self.thing_manager.place()
         while self.loop:
             self.main_loop()
 
@@ -91,6 +93,9 @@ class Game:
         self.stuff_manager.cull()
         self.stuff_manager.process(do_actions)
 
+        self.thing_manager.cull()
+        self.thing_manager.process(do_actions)
+
         tick_text = f"Tick: {self.num_ticks}"
         ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))
         self.surface.blit(ren, (10, 10))
@@ -122,6 +127,7 @@ if __name__ == "__main__":
         _config.getint("tsg", "stuff_chance"),
         _config.getint("tsg", "gack_chance"),
         _config.getint("tsg", "gack_size"),
+        _config.getint("tsg", "thing_chance"),
     )
     game = Game(_tsg_config)
     game.main()

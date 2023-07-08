@@ -25,15 +25,15 @@ class GackManager(BaseManager):
         """
         Initial World with randomly placed Gack
         """
-        for row in range(self.config.world_width):
-            for col in range(self.config.world_height):
+        for x in range(self.max_width):
+            for y in range(self.max_height):
                 can_place = random.randint(0, self.config.gack_chance)
                 if can_place == self.place_chance:
                     # gack is added in a block defined by `gack_size`
-                    for gack_row in range(self.config.gack_size):
-                        for gack_col in range(self.config.gack_size):
-                            if row + gack_row < self.wlim and col + gack_col < self.hlim:
-                                self.add(Cell(row + gack_row, col + gack_col))
+                    for gack_w in range(self.config.gack_size):
+                        for gack_h in range(self.config.gack_size):
+                            if x + gack_w < self.max_width and y + gack_h < self.max_height:
+                                self.add(Cell(x + gack_w, y + gack_h))
 
     def add(self, cell: Cell):
         """
@@ -42,4 +42,4 @@ class GackManager(BaseManager):
         :param col: which col
         """
         self.counter += 1
-        self.matrix[cell.row][cell.col] = Gack(self, self.surface, cell, self.cell_dims)
+        self.matrix[cell.x][cell.y] = Gack(self, self.surface, cell, self.cell_dims)

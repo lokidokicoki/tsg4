@@ -3,14 +3,11 @@ BaseManager - This looks after the various entities in the World
 
 The BaseManager is subclassed for the spefici entity types.
 """
-from collections import namedtuple
 from typing import List, Optional, Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, TSGConfig
-
-NextFreeCell = namedtuple("NextFreeCell", "is_free row col")
+from tsg import BaseTSG, Cell, NextFreeCell, TSGConfig
 
 
 class BaseManager:
@@ -24,51 +21,56 @@ class BaseManager:
         self.surface = surface
         self.cell_dims = cell_dims
         self.matrix: List[List[Optional[BaseTSG]]] = [
-            [None for col in range(self.config.world_width)]
-            for row in range(self.config.world_height)
+            [None for col in range(self.config.world_height)]
+            for row in range(self.config.world_width)
         ]
-        self.wlim = len(self.matrix)
-        self.hlim = len(self.matrix[0])
+        self.max_width = len(self.matrix)
+        self.max_height = len(self.matrix[0])
 
-    def get_next_free_cell(self, row, col) -> NextFreeCell:
+    def get_next_free_cell(self, cell: Cell) -> NextFreeCell:
         """
-        Find the next empty cell in the matrix starting top left and moving clockwise
+        Find the next empty cell in the matrix starting mid left and moving clockwise
         """
-        # check adjacent cells to passed row and col
-        if (row - 1 >= 0) and (col - 1 >= 0) and self.matrix[row - 1][col - 1] is None:
-            next_free_cell = NextFreeCell(True, row - 1, col - 1)
-        elif (row - 1 >= 0) and self.matrix[row - 1][col] is None:
-            next_free_cell = NextFreeCell(True, row - 1, col)
-        elif (
-            (row - 1 >= 0)
-            and (col + 1 < self.config.world_height)
-            and self.matrix[row - 1][col + 1] is None
-        ):
-            next_free_cell = NextFreeCell(True, row - 1, col + 1)
-
-        elif (col - 1 >= 0) and self.matrix[row][col - 1] is None:
-            next_free_cell = NextFreeCell(True, row, col - 1)
-        elif (col + 1 < self.config.world_height) and self.matrix[row][col + 1] is None:
-            next_free_cell = NextFreeCell(True, row, col + 1)
-
-        elif (
-            (row + 1 < self.config.world_width)
-            and (col - 1 >= 0)
-            and self.matrix[row + 1][col - 1] is None
-        ):
-            next_free_cell = NextFreeCell(True, row + 1, col - 1)
-        elif (row + 1 < self.config.world_width) and self.matrix[row + 1][col] is None:
-            next_free_cell = NextFreeCell(True, row + 1, col)
-        elif (
-            (row + 1 < self.config.world_width)
-            and (col + 1 < self.config.world_height)
-            and self.matrix[row + 1][col + 1] is None
-        ):
-            next_free_cell = NextFreeCell(True, row + 1, col + 1)
-        else:
-            next_free_cell = NextFreeCell(False, row, col)
+        next_free_cell = NextFreeCell(False, cell.x, cell.y)
+        for direction in range(0, 7):
+            next_free_cell = self.get_facing_cell(direction, cell)
+            if next_free_cell.is_free:
+                break
 
         return next_free_cell
+
+    def get_facing_cell(self, facing_direction: int, cell: Cell) -> NextFreeCell:
+        """
+        Translate facing to Cell, facing dir is 0 to 7 from right CW
+        """
+        x = cell.x
+        y = cell.y
+        match facing_direction:
+            case 0:
+                x += 1
+            case 1:
+                x += 1
+                y += 1
+            case 2:
+                y += 1
+            case 3:
+                x -= 1
+                y += 1
+            case 4:
+                x -= 1
+            case 5:
+                x -= 1
+                y -= 1
+            case 6:
+                y -= 1
+            case 7:
+                x += 1
+                y -= 1
+
+        if 0 <= x < self.max_width and 0 <= y < self.max_height and self.matrix[x][y] is None:
+            return NextFreeCell(True, x, y)
+
+        return NextFreeCell(False, cell.x, cell.y)
 
     def add(self, cell: Cell):
         """
@@ -87,9 +89,9 @@ class BaseManager:
         Check each cell in matrix, if a Stuff is present,
         tell it to process its actions
         """
-        for row in range(self.config.world_width):
-            for col in range(self.config.world_height):
-                tsg = self.matrix[row][col]
+        for x in range(self.max_width):
+            for y in range(self.max_height):
+                tsg = self.matrix[x][y]
                 if tsg:
                     tsg.process(do_actions)
 
@@ -97,4 +99,4 @@ class BaseManager:
         """
         Remove TSG instance from matrix
         """
-        self.matrix[cell.row][cell.col] = None
+        self.matrix[cell.x][cell.y] = None

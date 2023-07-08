@@ -16,12 +16,13 @@ class Stuff(BaseTSG):
     def __init__(self, manager, surface, cell: Cell, size: int):
         super().__init__(surface, f"S{manager.counter}", cell, pg.Color(0, 10, 0))
         self.manager = manager
+        self.tile_size = size
         self.size = size / 2
         self.lifespan = 50
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.pos = (
-            (size * ((cell.row * size) // size)) + self.size,
-            (size * ((cell.col * size) // size)) + self.size,
+            (size * ((cell.x * size) // size)) + self.size,
+            (size * ((cell.y * size) // size)) + self.size,
         )
 
     def __str__(self) -> str:
@@ -54,7 +55,7 @@ class Stuff(BaseTSG):
             next_free_cell = self.manager.get_next_free_cell(self.cell)
 
             if next_free_cell.is_free:
-                self.manager.add(next_free_cell.row, next_free_cell.col)
+                self.manager.add(next_free_cell)
                 self.energy = int(self.energy / 2)
             else:
                 self.die(True)
