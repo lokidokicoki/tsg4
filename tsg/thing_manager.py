@@ -56,7 +56,7 @@ class ThingManager(BaseManager):
                     self.remove(Cell(row, col))
 
     def move(self, thing: Thing, new_cell: Cell):
-        print(f"MGR.move {thing.name} from {thing.cell} to {new_cell}")
+        # print(f"MGR.move {thing.name} from {thing.cell} to {new_cell}")
         self.remove(thing.cell)
         self.matrix[new_cell.x][new_cell.y] = thing
         thing.cell = new_cell

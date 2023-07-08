@@ -46,7 +46,7 @@ class Thing(BaseTSG):
             (size * ((cell.x * size) // size)) + self.size,
             (size * ((cell.y * size) // size)) + self.size,
         )
-        self.facing = 3  # random.randint(0, 7)
+        self.facing = random.randint(0, 7)
         self.eye_size = self.size * 0.1
         self.eye_color = pg.Color(200, 0, 0)
         self.has_moved = False
@@ -63,18 +63,19 @@ class Thing(BaseTSG):
         self.draw()
 
     def move(self):
+        """
+        check is cell in facing direction is clear, if so move into it
+        """
         if not self.has_moved:
-            # check is cell in facing direction is clear, if so move into it
-
-            print(f"Pre move {self.name}:f {self.facing}, c:{self.cell}")
+            # print(f"Pre move {self.name}:f {self.facing}, c:{self.cell}")
             facing_cell = self.manager.get_facing_cell(self.facing, self.cell)
-            print(f" => move to - facing cell {facing_cell}")
+            # print(f" => move to - facing cell {facing_cell}")
             if facing_cell.is_free:
                 self.manager.move(self, facing_cell)
             else:
                 self.facing = random.randint(0, 7)
             self.has_moved = True
-            print(f"matrix post move {self.manager.matrix}")
+            # print(f"matrix post move {self.manager.matrix}")
 
     def eat(self):
         pass
@@ -87,7 +88,6 @@ class Thing(BaseTSG):
 
     def draw(self):
         draw_regular_polygon(self.surface, self.color, 8, self.size, self.pos)
-        # pg.draw.circle(self.surface, self.color, self.pos, self.size)
         draw_eye_spot(
             self.surface, self.eye_color, 8, self.facing, self.size, self.eye_size, self.pos
         )
