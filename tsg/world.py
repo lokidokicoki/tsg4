@@ -144,6 +144,7 @@ class World:
             raise TypeError(f"Uknown entity type {entity}")
 
         self.matrix[cell.x][cell.y].set(entity)
+        return entity
 
     def cull(self):
         """
@@ -188,16 +189,14 @@ class World:
         """
         for x in range(self.max_width):
             for y in range(self.max_height):
-                can_place = random.randint(0, self.config.gack_chance)
-                if can_place == self.config.gack_chance:
+                can_place = random.uniform(0, 1)
+                if can_place <= self.config.gack_chance:
                     self._add_gack(x, y)
 
-                can_place = random.randint(0, self.config.stuff_chance)
-                if can_place == self.config.stuff_chance:
+                if can_place <= self.config.stuff_chance:
                     self.add(Stuff, Cell(x, y))
 
-                can_place = random.randint(0, self.config.thing_chance)
-                if can_place == self.config.thing_chance:
+                if can_place <= self.config.thing_chance:
                     self.add(Thing, Cell(x, y))
 
     def move(self, thing: Thing, new_cell: Cell):

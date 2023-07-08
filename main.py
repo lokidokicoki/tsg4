@@ -126,10 +126,10 @@ if __name__ == "__main__":
         _config.getint("tsg", "resolution_h"),
         _config.getint("tsg", "world_width"),
         _config.getint("tsg", "world_height"),
-        _config.getint("tsg", "stuff_chance"),
-        _config.getint("tsg", "gack_chance"),
+        _config.getfloat("tsg", "stuff_chance"),
+        _config.getfloat("tsg", "gack_chance"),
         _config.getint("tsg", "gack_size"),
-        _config.getint("tsg", "thing_chance"),
+        _config.getfloat("tsg", "thing_chance"),
     )
     game = Game(_tsg_config)
     game.main()
