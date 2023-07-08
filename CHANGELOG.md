@@ -1,3 +1,9 @@
+## v0.4.0 (2023-07-08)
+
+### Feat
+
+- new `world` entity manager. reworked everthing to suit.
+
 ## v0.3.0 (2023-07-08)
 
 ### Feat
