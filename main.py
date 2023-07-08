@@ -51,8 +51,8 @@ class Game:
         Main entry point and set up
         """
 
-        # self.stuff_manager.place()
-        # self.gack_manager.place()
+        self.stuff_manager.place()
+        self.gack_manager.place()
         self.thing_manager.place()
         while self.loop:
             self.main_loop()
@@ -89,9 +89,9 @@ class Game:
                 )
                 pg.draw.rect(self.surface, (40, 40, 40), rect)
 
-        # self.gack_manager.process(do_actions)
-        # self.stuff_manager.cull()
-        # self.stuff_manager.process(do_actions)
+        self.gack_manager.process(do_actions)
+        self.stuff_manager.cull()
+        self.stuff_manager.process(do_actions)
 
         self.thing_manager.cull()
         self.thing_manager.process(do_actions)
