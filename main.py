@@ -65,6 +65,9 @@ class Game:
         - displays number of action ticks so far
         - event handling
         """
+        if self.world.stats["T"] == 0:
+            self.paused = True
+
         if not self.paused:
             self.clock.tick(30)
             self.surface.fill((0, 0, 0))
