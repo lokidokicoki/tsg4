@@ -15,7 +15,7 @@ class Stuff(BaseTSG):
     Create a Stuff instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Tuple[float, float]):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
@@ -24,9 +24,8 @@ class Stuff(BaseTSG):
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.pos = (
             (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
-            (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
+            (cell_dims[1] * ((cell.y * cell_dims[1]) // cell_dims[1])) + self.size,
         )
-        self.hunger = 0
 
     def process(self, do_actions: bool):
         super().process(do_actions)

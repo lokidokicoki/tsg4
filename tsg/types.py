@@ -22,6 +22,7 @@ class TSGConfig:
     """
 
     update_period: float
+    growth_period: int
     tick_speed: int
     resolution_w: int
     resolution_h: int

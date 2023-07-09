@@ -78,7 +78,8 @@ class Game:
                 do_actions = True
                 self.last_update = now
                 self.num_ticks += 1
-                if self.num_ticks % 500 == 0:
+
+                if self.num_ticks % self.config.growth_period == 0:
                     self.world.growth_season()
 
             # render alternating grid
@@ -126,6 +127,7 @@ if __name__ == "__main__":
     _config.read("./config.ini")
     _tsg_config = TSGConfig(
         _config.getfloat("tsg", "update_period"),
+        _config.getint("tsg", "growth_period"),
         _config.getint("tsg", "tick_speed"),
         _config.getint("tsg", "resolution_w"),
         _config.getint("tsg", "resolution_h"),
