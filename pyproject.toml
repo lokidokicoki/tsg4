@@ -29,7 +29,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.commitizen]
 name = "cz_conventional_commits"
 version_files = [
-    "pyproject.toml:^version"
+    "pyproject.toml:version"
 ]
 tag_format = "v$version"
 
