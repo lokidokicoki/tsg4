@@ -59,6 +59,12 @@ class Game:
         with open("tsg.csv", mode="w", encoding="utf-8") as csv:
             csv.write("\n".join(self.log_stats))
 
+        ancestry: List[str] = []
+        for element in self.world.lineages:
+            ancestry.append(f"{element[0]}, {element[1]}")
+        with open("ancestry.csv", mode="w", encoding="utf-8") as csv:
+            csv.write("\n".join(ancestry))
+
         plots.show_plot()
 
         pg.quit()
