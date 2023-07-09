@@ -1,3 +1,11 @@
+## v0.5.1 (2023-07-09)
+
+### Fix
+
+- try again
+- versioning again
+- **pyproject**: sync poetry and commitzen versions
+
 ## v0.5.0 (2023-07-09)
 
 ### Feat
