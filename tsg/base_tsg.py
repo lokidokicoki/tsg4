@@ -36,6 +36,7 @@ class BaseTSG:
         self.pos = None
         self.size = cell_dims[0]
         self.lineage: List[str] = []
+        self.hunger = 0
 
     def __str__(self) -> str:
         return (
