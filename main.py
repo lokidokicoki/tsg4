@@ -91,11 +91,14 @@ class Game:
             self.world.process(do_actions)
 
             tick_text = f"Tick: {self.num_ticks}"
-            stat_text = f"Stats: {self.world.stats}"
+            stat_text = f"Live: {self.world.stats}"
+            total_text = f"All:  {self.world.counters}"
             ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))
             self.surface.blit(ren, (10, 10))
             ren = self.font.render(stat_text, 0, (250, 240, 230), (5, 5, 5))
             self.surface.blit(ren, (10, 30))
+            ren = self.font.render(total_text, 0, (250, 240, 230), (5, 5, 5))
+            self.surface.blit(ren, (10, 50))
 
         # handle events
         for event in pg.event.get():
