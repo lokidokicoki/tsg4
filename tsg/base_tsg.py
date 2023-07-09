@@ -1,7 +1,7 @@
 """
 Base class for TSG classes.
 """
-from typing import Tuple
+from typing import List, Tuple
 
 import pygame as pg
 
@@ -22,6 +22,7 @@ class BaseTSG:
         cell_dims: Tuple[float, float],
         color: pg.Color,
     ):
+        self.manager = manager
         self.surface = surface
         self.energy = 1
         self.age = 0
@@ -34,9 +35,13 @@ class BaseTSG:
         self.cell_dims = cell_dims
         self.pos = None
         self.size = cell_dims[0]
+        self.lineage: List[str] = []
 
     def __str__(self) -> str:
-        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
+        return (
+            f"{self.name}, lineage: {'->'.join(self.lineage)} cell: ({self.cell}), "
+            f"age: {self.age}, energy: {self.energy}"
+        )
 
     def draw(self):
         """

@@ -229,6 +229,36 @@ class World:
             + klass.size,
         )
 
+    def get_grid_at_pos(self, target) -> Cell:
+        """
+        Translate mouse position to a grid cell
+        """
+        x = self.cell_dims[0] * (target[0] // self.cell_dims[0])
+        y = self.cell_dims[1] * (target[1] // self.cell_dims[1])
+
+        if x > 0:
+            x /= self.cell_dims[0]
+        if y > 0:
+            y /= self.cell_dims[1]
+        target_cell = Cell(int(x), int(y))
+        return target_cell
+
+    def dump_cell_contents(self, target):
+        """
+        Output cell contents at mouse position
+        """
+        cell = self.get_grid_at_pos(target)
+        contents = self.matrix[cell.x][cell.y]
+
+        print(f"Cell contents @ {cell}")
+        if contents.thing:
+            print(f"=> Thing {contents.thing}")
+        if contents.stuff:
+            print(f"=> Stuff {contents.stuff}")
+        if contents.gack:
+            print(f"=> Gack  {contents.gack}")
+        print("---")
+
     def _add_gack(self, x: int, y: int):
         # gack is added in a block defined by `gack_size`
         for gack_w in range(self.config.gack_size):

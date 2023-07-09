@@ -112,7 +112,7 @@ class Game:
                         self.paused = not self.paused
                 case pg.MOUSEBUTTONUP:
                     pos = pg.mouse.get_pos()
-                    print(pos)
+                    self.world.dump_cell_contents(pos)
         pg.display.update()
 
 
