@@ -1,7 +1,7 @@
 """
 isort: skip_file
 """
-from .types import Cell, TSGConfig, NextFreeCell
+from .types import Cell, TSGConfig
 from .base_tsg import BaseTSG
 from .stuff import Stuff
 from .gack import Gack

@@ -39,12 +39,11 @@ class Game:
             (self.config.world_width, self.config.world_height),
         )
         self.loop = True
+        self.paused = False
         self.last_update = 0
         self.num_ticks = 0
         self.font = pg.font.SysFont("Arial", 20)
         self.world = World(self.config, self.surface, self.cell_dims)
-        # self.gack_manager = GackManager(self.config, self.surface, self.cell_dims)
-        # self.thing_manager = ThingManager(self.config, self.surface, self.cell_dims)
 
     def main(self):
         """
@@ -52,8 +51,6 @@ class Game:
         """
 
         self.world.place()
-        # self.gack_manager.place()
-        # self.thing_manager.place()
         while self.loop:
             self.main_loop()
 
@@ -68,39 +65,40 @@ class Game:
         - displays number of action ticks so far
         - event handling
         """
-        self.clock.tick(30)
-        self.surface.fill((0, 0, 0))
-        # has enough time passed to perform an action?
-        do_actions = False
-        now = pg.time.get_ticks() / self.config.tick_speed
-        if now - self.last_update > self.config.update_period:
-            do_actions = True
-            self.last_update = now
-            self.num_ticks += 1
+        if not self.paused:
+            self.clock.tick(30)
+            self.surface.fill((0, 0, 0))
+            # has enough time passed to perform an action?
+            do_actions = False
+            now = pg.time.get_ticks() / self.config.tick_speed
+            if now - self.last_update > self.config.update_period:
+                do_actions = True
+                self.last_update = now
+                self.num_ticks += 1
 
-        # render alternating grid
-        for row in range(self.config.world_width):
-            for col in range(row % 2, self.config.world_height, 2):
-                rect = (
-                    row * self.cell_dims[0],
-                    col * self.cell_dims[1],
-                    self.cell_dims[0],
-                    self.cell_dims[1],
-                )
-                pg.draw.rect(self.surface, (40, 40, 40), rect)
+            # render alternating grid
+            for row in range(self.config.world_width):
+                for col in range(row % 2, self.config.world_height, 2):
+                    rect = (
+                        row * self.cell_dims[0],
+                        col * self.cell_dims[1],
+                        self.cell_dims[0],
+                        self.cell_dims[1],
+                    )
+                    pg.draw.rect(self.surface, (40, 40, 40), rect)
 
-        self.world.cull()
-        self.world.process(do_actions)
-        # self.gack_manager.process(do_actions)
-        # self.stuff_manager.cull()
-        # self.stuff_manager.process(do_actions)
+            self.world.cull()
+            self.world.process(do_actions)
 
-        # self.thing_manager.cull()
-        # self.thing_manager.process(do_actions)
-
-        tick_text = f"Tick: {self.num_ticks}"
-        ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))
-        self.surface.blit(ren, (10, 10))
+            tick_text = f"Tick: {self.num_ticks}"
+            stat_text = f"Live: {self.world.stats}"
+            total_text = f"All:  {self.world.counters}"
+            ren = self.font.render(tick_text, 0, (250, 240, 230), (5, 5, 5))
+            self.surface.blit(ren, (10, 10))
+            ren = self.font.render(stat_text, 0, (250, 240, 230), (5, 5, 5))
+            self.surface.blit(ren, (10, 30))
+            ren = self.font.render(total_text, 0, (250, 240, 230), (5, 5, 5))
+            self.surface.blit(ren, (10, 50))
 
         # handle events
         for event in pg.event.get():
@@ -110,9 +108,11 @@ class Game:
                 case pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
                         self.loop = False
+                    elif event.key == pg.K_SPACE:
+                        self.paused = not self.paused
                 case pg.MOUSEBUTTONUP:
                     pos = pg.mouse.get_pos()
-                    print(pos)
+                    self.world.dump_cell_contents(pos)
         pg.display.update()
 
 
@@ -126,10 +126,10 @@ if __name__ == "__main__":
         _config.getint("tsg", "resolution_h"),
         _config.getint("tsg", "world_width"),
         _config.getint("tsg", "world_height"),
-        _config.getint("tsg", "stuff_chance"),
-        _config.getint("tsg", "gack_chance"),
+        _config.getfloat("tsg", "stuff_chance"),
+        _config.getfloat("tsg", "gack_chance"),
         _config.getint("tsg", "gack_size"),
-        _config.getint("tsg", "thing_chance"),
+        _config.getfloat("tsg", "thing_chance"),
     )
     game = Game(_tsg_config)
     game.main()

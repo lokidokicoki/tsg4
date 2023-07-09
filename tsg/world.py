@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple, Type, Union
 
 import pygame as pg
 
-from tsg import Cell, Gack, NextFreeCell, Stuff, Thing, TSGConfig
+from tsg import Cell, Gack, Stuff, Thing, TSGConfig
 
 
 class CellContent:
@@ -69,6 +69,11 @@ class World:
             "S": 0,
             "G": 0,
         }
+        self.stats = {
+            "T": 0,
+            "S": 0,
+            "G": 0,
+        }
         self.config = config
         self.surface = surface
         self.cell_dims = cell_dims
@@ -79,11 +84,11 @@ class World:
         self.max_width = len(self.matrix)
         self.max_height = len(self.matrix[0])
 
-    def get_next_free_cell(self, cell: Cell, check_type: str) -> NextFreeCell:
+    def get_next_free_cell(self, cell: Cell, check_type: str) -> Cell:
         """
         Find the next empty cell in the matrix starting mid left and moving clockwise
         """
-        next_free_cell = NextFreeCell(False, cell.x, cell.y)
+        next_free_cell = Cell(cell.x, cell.y)
         for direction in range(0, 7):
             next_free_cell = self.get_facing_cell(direction, cell, check_type)
             if next_free_cell.is_free:
@@ -91,7 +96,7 @@ class World:
 
         return next_free_cell
 
-    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> NextFreeCell:
+    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> Cell:
         """
         Translate facing to Cell, facing dir is 0 to 7 from right CW
         """
@@ -124,9 +129,9 @@ class World:
             and 0 <= y < self.max_height
             and self.matrix[x][y].get(check_type) is None
         ):
-            return NextFreeCell(True, x, y)
+            return Cell(x, y, True)
 
-        return NextFreeCell(False, cell.x, cell.y)
+        return Cell(cell.x, cell.y, False)
 
     def add(self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell):
         """
@@ -136,14 +141,18 @@ class World:
         entity = klass(self, self.surface, cell, self.cell_dims)
         if isinstance(entity, Thing):
             self.counters["T"] += 1
+            self.stats["T"] += 1
         elif isinstance(entity, Stuff):
             self.counters["S"] += 1
+            self.stats["S"] += 1
         elif isinstance(entity, Gack):
             self.counters["G"] += 1
+            self.stats["G"] += 1
         else:
             raise TypeError(f"Uknown entity type {entity}")
 
         self.matrix[cell.x][cell.y].set(entity)
+        return entity
 
     def cull(self):
         """
@@ -156,10 +165,12 @@ class World:
                 cell_content = self.matrix[x][y]
                 if cell_content.stuff and cell_content.stuff.dead:
                     cell_content.stuff = None
+                    self.stats["S"] -= 1
                 if cell_content.thing:
                     cell_content.thing.has_moved = False
                     if cell_content.thing.dead:
                         cell_content.thing = None
+                        self.stats["T"] -= 1
 
     def process(self, do_actions: bool = False):
         """
@@ -188,16 +199,14 @@ class World:
         """
         for x in range(self.max_width):
             for y in range(self.max_height):
-                can_place = random.randint(0, self.config.gack_chance)
-                if can_place == self.config.gack_chance:
+                can_place = random.uniform(0, 1)
+                if can_place <= self.config.gack_chance:
                     self._add_gack(x, y)
 
-                can_place = random.randint(0, self.config.stuff_chance)
-                if can_place == self.config.stuff_chance:
+                if can_place <= self.config.stuff_chance:
                     self.add(Stuff, Cell(x, y))
 
-                can_place = random.randint(0, self.config.thing_chance)
-                if can_place == self.config.thing_chance:
+                if can_place <= self.config.thing_chance:
                     self.add(Thing, Cell(x, y))
 
     def move(self, thing: Thing, new_cell: Cell):
@@ -219,6 +228,36 @@ class World:
             (klass.cell_dims[1] * ((klass.cell.y * klass.cell_dims[1]) // klass.cell_dims[1]))
             + klass.size,
         )
+
+    def get_grid_at_pos(self, target) -> Cell:
+        """
+        Translate mouse position to a grid cell
+        """
+        x = self.cell_dims[0] * (target[0] // self.cell_dims[0])
+        y = self.cell_dims[1] * (target[1] // self.cell_dims[1])
+
+        if x > 0:
+            x /= self.cell_dims[0]
+        if y > 0:
+            y /= self.cell_dims[1]
+        target_cell = Cell(int(x), int(y))
+        return target_cell
+
+    def dump_cell_contents(self, target):
+        """
+        Output cell contents at mouse position
+        """
+        cell = self.get_grid_at_pos(target)
+        contents = self.matrix[cell.x][cell.y]
+
+        print(f"Cell contents @ {cell}")
+        if contents.thing:
+            print(f"=> Thing {contents.thing}")
+        if contents.stuff:
+            print(f"=> Stuff {contents.stuff}")
+        if contents.gack:
+            print(f"=> Gack  {contents.gack}")
+        print("---")
 
     def _add_gack(self, x: int, y: int):
         # gack is added in a block defined by `gack_size`

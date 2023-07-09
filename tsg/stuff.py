@@ -19,7 +19,6 @@ class Stuff(BaseTSG):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
-        self.manager = manager
         self.size = cell_dims[0] / 2
         self.lifespan = 50
         self.spawn_threshold = 20  # amount of energy required to spawn
@@ -28,9 +27,6 @@ class Stuff(BaseTSG):
             (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
         )
 
-    def __str__(self) -> str:
-        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
-
     def process(self, do_actions: bool):
         super().process(do_actions)
 
@@ -38,6 +34,7 @@ class Stuff(BaseTSG):
             self.eat()
             self.spawn()
             self.die()
+            self.age += 1
 
         self.draw()
 
@@ -46,7 +43,6 @@ class Stuff(BaseTSG):
         'Eat' substrate and grow!
         """
         self.energy += 1
-        self.age += 1
         self.color.g = min(200, 10 * self.energy)
 
     def spawn(self):
