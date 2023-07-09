@@ -71,6 +71,7 @@ class World:
         }
         self.stats = {
             "T": 0,
+            "Tmx": 0,
             "S": 0,
             "G": 0,
         }
@@ -142,6 +143,7 @@ class World:
         if isinstance(entity, Thing):
             self.counters["T"] += 1
             self.stats["T"] += 1
+            self.stats["Tmx"] = max(self.stats["Tmx"], self.stats["T"])
         elif isinstance(entity, Stuff):
             self.counters["S"] += 1
             self.stats["S"] += 1
@@ -192,6 +194,18 @@ class World:
         Remove TSG instance from matrix
         """
         self.matrix[cell.x][cell.y].remove(check_type)
+
+    def growth_season(self):
+        """
+        Initial World with randomly placed entities
+        """
+        print("GROWTH_SEASON")
+
+        for x in range(self.max_width):
+            for y in range(self.max_height):
+                can_place = random.uniform(0, 1)
+                if can_place <= self.config.stuff_chance / 10:
+                    self.add(Stuff, Cell(x, y))
 
     def place(self):
         """
