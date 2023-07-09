@@ -86,15 +86,20 @@ class Thing(BaseTSG):
             # print(f"=> matrix post move {self.manager.matrix}")
 
     def eat(self):
+        """
+        Eat Stuff!
+        """
         stuff = self.manager.matrix[self.cell.x][self.cell.y].get("S")
 
         if stuff:
-            # how much energy do they have?
             free_energy = stuff.energy - 1
             self.energy += free_energy
             stuff.energy = 1
 
     def spawn(self):
+        """
+        Spawn a new Thing - simple fission
+        """
         if self.energy >= self.spawn_threshold:
             next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
@@ -103,6 +108,9 @@ class Thing(BaseTSG):
                 self.energy = self.energy / 2
 
     def die(self, force: bool = False):
+        """
+        If lifespan reache, or energy all gone, the Thing dies.
+        """
         if force or self.age > self.lifespan or self.energy <= 0:
             self.dead = True
 
