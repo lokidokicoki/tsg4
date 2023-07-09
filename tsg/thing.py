@@ -9,7 +9,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, NextFreeCell
+from tsg import BaseTSG, Cell
 
 
 def draw_eye_spot(surface, color, vertex_count, facing, radius, eye_radius, position):
@@ -103,7 +103,9 @@ class Thing(BaseTSG):
             next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
             if next_free_cell.is_free:
-                self.manager.add(Thing, next_free_cell)
+                new_thing = self.manager.add(Thing, next_free_cell)
+                new_thing.lineage = self.lineage.copy()
+                new_thing.lineage.append(self.name)
                 self.energy = self.energy / 2
 
     def die(self, force: bool = False):
