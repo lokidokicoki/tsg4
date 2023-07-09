@@ -35,6 +35,7 @@ class Stuff(BaseTSG):
             self.eat()
             self.spawn()
             self.die()
+            self.age += 1
 
         self.draw()
 
@@ -43,7 +44,6 @@ class Stuff(BaseTSG):
         'Eat' substrate and grow!
         """
         self.energy += 1
-        self.age += 1
         self.color.g = min(200, 10 * self.energy)
 
     def spawn(self):
