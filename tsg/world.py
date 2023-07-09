@@ -71,6 +71,7 @@ class World:
         }
         self.stats = {
             "T": 0,
+            "Tmx": 0,
             "S": 0,
             "G": 0,
         }
@@ -142,6 +143,7 @@ class World:
         if isinstance(entity, Thing):
             self.counters["T"] += 1
             self.stats["T"] += 1
+            self.stats["Tmx"] = max(self.stats["Tmx"], self.stats["T"])
         elif isinstance(entity, Stuff):
             self.counters["S"] += 1
             self.stats["S"] += 1

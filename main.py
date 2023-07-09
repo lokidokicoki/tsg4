@@ -2,7 +2,7 @@
 TSG4 - a little life simulation
 """
 from configparser import ConfigParser
-from typing import Tuple
+from typing import List, Tuple
 
 import pygame as pg
 
@@ -44,6 +44,7 @@ class Game:
         self.num_ticks = 0
         self.font = pg.font.SysFont("Arial", 20)
         self.world = World(self.config, self.surface, self.cell_dims)
+        self.log_stats: List[str] = ["tick,Tmx,Live"]
 
     def main(self):
         """
@@ -53,6 +54,9 @@ class Game:
         self.world.place()
         while self.loop:
             self.main_loop()
+
+        with open("tsg.csv", mode="w", encoding="utf-8") as csv:
+            csv.write("\n".join(self.log_stats))
 
         pg.quit()
 
@@ -95,6 +99,9 @@ class Game:
 
             self.world.cull()
             self.world.process(do_actions)
+            self.log_stats.append(
+                f"{self.num_ticks},{self.world.stats['Tmx']},{self.world.stats['T']}"
+            )
 
             tick_text = f"Tick: {self.num_ticks}"
             stat_text = f"Live: {self.world.stats}"
