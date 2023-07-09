@@ -69,6 +69,11 @@ class World:
             "S": 0,
             "G": 0,
         }
+        self.stats = {
+            "T": 0,
+            "S": 0,
+            "G": 0,
+        }
         self.config = config
         self.surface = surface
         self.cell_dims = cell_dims
@@ -136,10 +141,13 @@ class World:
         entity = klass(self, self.surface, cell, self.cell_dims)
         if isinstance(entity, Thing):
             self.counters["T"] += 1
+            self.stats["T"] += 1
         elif isinstance(entity, Stuff):
             self.counters["S"] += 1
+            self.stats["S"] += 1
         elif isinstance(entity, Gack):
             self.counters["G"] += 1
+            self.stats["G"] += 1
         else:
             raise TypeError(f"Uknown entity type {entity}")
 
@@ -157,10 +165,12 @@ class World:
                 cell_content = self.matrix[x][y]
                 if cell_content.stuff and cell_content.stuff.dead:
                     cell_content.stuff = None
+                    self.stats["S"] -= 1
                 if cell_content.thing:
                     cell_content.thing.has_moved = False
                     if cell_content.thing.dead:
                         cell_content.thing = None
+                        self.stats["T"] -= 1
 
     def process(self, do_actions: bool = False):
         """
