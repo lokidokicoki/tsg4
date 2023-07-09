@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple, Type, Union
 
 import pygame as pg
 
-from tsg import Cell, Gack, NextFreeCell, Stuff, Thing, TSGConfig
+from tsg import Cell, Gack, Stuff, Thing, TSGConfig
 
 
 class CellContent:
@@ -84,11 +84,11 @@ class World:
         self.max_width = len(self.matrix)
         self.max_height = len(self.matrix[0])
 
-    def get_next_free_cell(self, cell: Cell, check_type: str) -> NextFreeCell:
+    def get_next_free_cell(self, cell: Cell, check_type: str) -> Cell:
         """
         Find the next empty cell in the matrix starting mid left and moving clockwise
         """
-        next_free_cell = NextFreeCell(False, cell.x, cell.y)
+        next_free_cell = Cell(cell.x, cell.y)
         for direction in range(0, 7):
             next_free_cell = self.get_facing_cell(direction, cell, check_type)
             if next_free_cell.is_free:
@@ -96,7 +96,7 @@ class World:
 
         return next_free_cell
 
-    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> NextFreeCell:
+    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> Cell:
         """
         Translate facing to Cell, facing dir is 0 to 7 from right CW
         """
@@ -129,9 +129,9 @@ class World:
             and 0 <= y < self.max_height
             and self.matrix[x][y].get(check_type) is None
         ):
-            return NextFreeCell(True, x, y)
+            return Cell(x, y, True)
 
-        return NextFreeCell(False, cell.x, cell.y)
+        return Cell(cell.x, cell.y, False)
 
     def add(self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell):
         """

@@ -10,19 +10,9 @@ class Cell:
     Defines a cell in the World
     """
 
-    x: int
-    y: int
-
-
-@dataclass
-class NextFreeCell:
-    """
-    Defines a cell in the World
-    """
-
-    is_free: bool
-    x: int
-    y: int
+    x: int = 0
+    y: int = 0
+    is_free: bool = False
 
 
 @dataclass
