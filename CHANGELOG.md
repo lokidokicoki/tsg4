@@ -1,3 +1,19 @@
+## v0.5.0 (2023-07-09)
+
+### Feat
+
+- **main,world**: stats for living items, display in game
+- **thing**: things new use energy when the move, and they age. if the energy is over 60, they will spawn a new thing in the next free cell. they can die
+
+### Fix
+
+- update lock and requirements files
+- **stuff**: stuff ages after all actions are prcocessed
+- **thing**: baseline lifespan and spawn threshold. on spawn parent thing looses half energy. child gets default
+- **config**: config cahnces are now probabilites
+- **thing**: on move, after checking for another thing, check if we are headed into gack, if so, spin
+- **stuff**: after a stuff is placed, check if it in gack, if so, die
+
 ## v0.4.0 (2023-07-08)
 
 ### Feat
