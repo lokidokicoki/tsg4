@@ -52,6 +52,7 @@ class Thing(BaseTSG):
         self.eye_size = self.size * 0.1
         self.eye_color = pg.Color(200, 0, 0)
         self.has_moved = False
+        self.hunger_threshold = 30
 
     def process(self, do_actions: bool):
         super().process(do_actions)
@@ -63,6 +64,7 @@ class Thing(BaseTSG):
             self.die()
             self.age += 1
             self.energy -= 1
+            self.hunger += 1
 
         self.draw()
 
@@ -71,9 +73,13 @@ class Thing(BaseTSG):
         check is cell in facing direction is clear, if so move into it
         """
         if not self.has_moved:
-            # print(f"Pre move {self.name}: facing {self.facing}, c:{self.cell}")
+            if self.hunger > self.hunger_threshold:
+                facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "S")
+                if facing_cell.is_free:
+                    self.facing = random.randint(0, 7)
+                    self.hunger /= 5
+
             facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "T")
-            # print(f" => move to - facing cell {facing_cell}")
             if facing_cell.is_free:
                 facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "G")
 
@@ -82,7 +88,6 @@ class Thing(BaseTSG):
             else:
                 self.facing = random.randint(0, 7)
             self.has_moved = True
-            # print(f"=> matrix post move {self.manager.matrix}")
 
     def eat(self):
         """
@@ -93,6 +98,7 @@ class Thing(BaseTSG):
         if stuff:
             free_energy = stuff.energy - 1
             self.energy += free_energy
+            self.hunger = 0
             stuff.energy = 1
 
     def spawn(self):
