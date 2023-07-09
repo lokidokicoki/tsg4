@@ -1,3 +1,17 @@
+## v0.6.0 (2023-07-09)
+
+### Feat
+
+- **main, world**: output file with thing stats
+
+### Fix
+
+- **main**: use growth_period from config
+- **main,world**: every 500 ticks, seed new stuff at a lower chance
+- **thing**: things get hungery. if hunger above a threshold, spin
+- **stuff**: stuff will eat every 3 ticks
+- **main**: if no things are left, pause game
+
 ## v0.5.1 (2023-07-09)
 
 ### Fix
