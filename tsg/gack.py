@@ -21,9 +21,6 @@ class Gack(BaseTSG):
             cell_dims[1],
         )
 
-    def __str__(self) -> str:
-        return f"{self.name}, cell: ({self.cell}), age: {self.age}, energy: {self.energy}"
-
     def process(self, do_actions: bool):
         self.draw()
 
