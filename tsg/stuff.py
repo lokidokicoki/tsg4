@@ -19,7 +19,6 @@ class Stuff(BaseTSG):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
-        self.manager = manager
         self.size = cell_dims[0] / 2
         self.lifespan = 50
         self.spawn_threshold = 20  # amount of energy required to spawn

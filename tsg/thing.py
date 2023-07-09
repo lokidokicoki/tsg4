@@ -40,7 +40,6 @@ class Thing(BaseTSG):
         super().__init__(
             manager, surface, f"T{manager.counters['T']}", cell, cell_dims, pg.Color(100, 100, 100)
         )
-        self.manager = manager
         self.size = cell_dims[0] / 2
         self.lifespan = 600
         self.energy = 50
