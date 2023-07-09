@@ -78,6 +78,8 @@ class Game:
                 do_actions = True
                 self.last_update = now
                 self.num_ticks += 1
+                if self.num_ticks % 500 == 0:
+                    self.world.growth_season()
 
             # render alternating grid
             for row in range(self.config.world_width):
