@@ -42,9 +42,9 @@ class Thing(BaseTSG):
         )
         self.manager = manager
         self.size = cell_dims[0] / 2
-        self.lifespan = 150
+        self.lifespan = 600
         self.energy = 50
-        self.spawn_threshold = 20  # amount of energy required to spawn
+        self.spawn_threshold = 250  # amount of energy required to spawn
         self.pos = (
             (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
             (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
@@ -95,14 +95,12 @@ class Thing(BaseTSG):
             stuff.energy = 1
 
     def spawn(self):
-        if self.energy >= 60:
+        if self.energy >= self.spawn_threshold:
             next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
             if next_free_cell.is_free:
-                new_thing = self.manager.add(Thing, next_free_cell)
-                new_energy = int(self.energy / 2)
-                new_thing.energy = new_energy
-                self.energy = new_energy
+                self.manager.add(Thing, next_free_cell)
+                self.energy = self.energy / 2
 
     def die(self, force: bool = False):
         if force or self.age > self.lifespan or self.energy <= 0:
