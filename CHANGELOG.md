@@ -1,3 +1,16 @@
+## v0.7.0 (2023-07-10)
+
+### Feat
+
+- **plots**: plots script can render either life/time or ancestry
+- **graph, tree**: fiddling with anscestry charts
+- **plots**: add plto script - called at end of game and can be run standalone
+
+### Fix
+
+- update lock and requirements files
+- lineage is now a set. first instance nodes gain a parent of T0
+
 ## v0.6.0 (2023-07-09)
 
 ### Feat
