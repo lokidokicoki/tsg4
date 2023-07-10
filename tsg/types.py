@@ -32,3 +32,38 @@ class TSGConfig:
     gack_chance: float
     gack_size: int
     thing_chance: float
+
+
+@dataclass
+class Factors:
+    """
+    Factors affect a Things stats and traits
+
+    :param drift: mutation probabilty
+    """
+
+    drift: float = 0.0
+    speed: float = 1.0
+    spin: float = 1.0
+    spawn: float = 1.0
+    feed: float = 1.0
+    lifespan: float = 1.0
+    fission: float = 1.0
+    fusion: float = 0.0
+    hunger: float = 1.0
+    thing: float = 0.0
+    stuff: float = 1.0
+    no_gack: float = 1.0
+    wet_gack: float = 0.0
+    dry_gack: float = 0.0
+
+
+@dataclass
+class Traits:
+    no_gack: int = 1
+    wet_gack: int = 0
+    dry_gack: int = 0
+    stuff: int = 1
+    thing: int = 0
+    fission: int = 1
+    fusion: int = 1

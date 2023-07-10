@@ -9,7 +9,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell
+from tsg import BaseTSG, Cell, Factors, Traits
 
 
 def draw_eye_spot(surface, color, vertex_count, facing, radius, eye_radius, position):
@@ -53,6 +53,9 @@ class Thing(BaseTSG):
         self.eye_color = pg.Color(200, 0, 0)
         self.has_moved = False
         self.hunger_threshold = 30
+        self.speed = 1
+        self.factors = Factors()
+        self.traits = Traits()
 
     def process(self, do_actions: bool):
         super().process(do_actions)
