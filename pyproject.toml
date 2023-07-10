@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tsg4"
-version = "0.6.0"
+version = "0.7.0"
 description = "Life sim"
 authors = ["Robin Tregaskis <lokidokicoki@gmail.com>"]
 readme = "README.md"
@@ -33,7 +33,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.6.0"
+version = "0.7.0"
 version_files = [
     "pyproject.toml:version"
 ]
