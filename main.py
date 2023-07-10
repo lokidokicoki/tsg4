@@ -6,6 +6,7 @@ from typing import List, Tuple
 
 import pygame as pg
 
+import plots
 from tsg import TSGConfig, World
 
 TITLE = "TSG4"
@@ -55,8 +56,16 @@ class Game:
         while self.loop:
             self.main_loop()
 
+        ancestry: List[str] = []
+        for element in self.world.lineages:
+            ancestry.append(f"{element[0]}, {element[1]}")
+        with open("ancestry.csv", mode="w", encoding="utf-8") as csv:
+            csv.write("\n".join(ancestry))
+
         with open("tsg.csv", mode="w", encoding="utf-8") as csv:
             csv.write("\n".join(self.log_stats))
+
+        plots.show_plot()
 
         pg.quit()
 

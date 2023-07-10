@@ -2,7 +2,7 @@
 World - This looks after the various entities in the World
 """
 import random
-from typing import List, Optional, Tuple, Type, Union
+from typing import List, Optional, Set, Tuple, Type, Union
 
 import pygame as pg
 
@@ -84,6 +84,7 @@ class World:
         ]
         self.max_width = len(self.matrix)
         self.max_height = len(self.matrix[0])
+        self.lineages: Set[Tuple[str, str]] = set()
 
     def get_next_free_cell(self, cell: Cell, check_type: str) -> Cell:
         """
@@ -134,12 +135,16 @@ class World:
 
         return Cell(cell.x, cell.y, False)
 
-    def add(self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell):
+    def add(
+        self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False
+    ):
         """
         Add entity to World at specified row and column
         """
 
         entity = klass(self, self.surface, cell, self.cell_dims)
+        if is_root:
+            self.lineages.add(("T0", entity.name))
         if isinstance(entity, Thing):
             self.counters["T"] += 1
             self.stats["T"] += 1
@@ -221,7 +226,7 @@ class World:
                     self.add(Stuff, Cell(x, y))
 
                 if can_place <= self.config.thing_chance:
-                    self.add(Thing, Cell(x, y))
+                    self.add(Thing, Cell(x, y), True)
 
     def move(self, thing: Thing, new_cell: Cell):
         """

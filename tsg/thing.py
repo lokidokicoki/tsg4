@@ -112,11 +112,12 @@ class Thing(BaseTSG):
                 new_thing = self.manager.add(Thing, next_free_cell)
                 new_thing.lineage = self.lineage.copy()
                 new_thing.lineage.append(self.name)
+                self.manager.lineages.add((self.name, new_thing.name))
                 self.energy = self.energy / 2
 
     def die(self, force: bool = False):
         """
-        If lifespan reache, or energy all gone, the Thing dies.
+        If lifespan reached, or energy all gone, the Thing dies.
         """
         if force or self.age > self.lifespan or self.energy <= 0:
             self.dead = True

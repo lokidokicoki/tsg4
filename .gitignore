@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 outputs
 tsg.csv
+ancestry.csv
+ancestry.gv
+ancestry.gv.pdf
