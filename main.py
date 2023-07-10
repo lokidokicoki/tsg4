@@ -65,7 +65,7 @@ class Game:
         with open("tsg.csv", mode="w", encoding="utf-8") as csv:
             csv.write("\n".join(self.log_stats))
 
-        plots.show_plot()
+        plots.draw_plot()
 
         pg.quit()
 
