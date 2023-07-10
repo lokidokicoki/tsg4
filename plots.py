@@ -3,10 +3,11 @@ Render plots for TSG
 """
 import csv
 
+import graphviz
 import matplotlib.pyplot as plt
 
 
-def show_plot():
+def draw_plot():
     """
     Draw a plot based on the TSG CSV data
     """
@@ -30,5 +31,30 @@ def show_plot():
     plt.show()
 
 
+def draw_tree():
+    tree = graphviz.Digraph("G", filename="ancestry.gv")
+    tree.graph_attr["rankdir"] = "LR"
+    tree.node("T0")
+
+    with open("ancestry.csv", mode="r", encoding="utf-8") as csvfile:
+        lines = list(csv.reader(csvfile, delimiter=","))
+
+        for line in lines:
+            tree.edge(line[0].strip(), line[1].strip())
+
+    tree.view()
+
+
 if __name__ == "__main__":
-    show_plot()
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument("-p", "--plot", action="store_true", help="Draw life over time plot")
+    parser.add_argument("-t", "--tree", action="store_true", help="Draw ancestry tree")
+
+    args = parser.parse_args()
+
+    if args.plot:
+        draw_plot()
+    elif args.tree:
+        draw_tree()

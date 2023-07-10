@@ -56,14 +56,14 @@ class Game:
         while self.loop:
             self.main_loop()
 
-        with open("tsg.csv", mode="w", encoding="utf-8") as csv:
-            csv.write("\n".join(self.log_stats))
-
         ancestry: List[str] = []
         for element in self.world.lineages:
             ancestry.append(f"{element[0]}, {element[1]}")
         with open("ancestry.csv", mode="w", encoding="utf-8") as csv:
             csv.write("\n".join(ancestry))
+
+        with open("tsg.csv", mode="w", encoding="utf-8") as csv:
+            csv.write("\n".join(self.log_stats))
 
         plots.show_plot()
 
