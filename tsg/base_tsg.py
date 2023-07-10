@@ -35,7 +35,7 @@ class BaseTSG:
         self.cell_dims = cell_dims
         self.pos = None
         self.size = cell_dims[0]
-        self.lineage: List[Tuple[str, str]] = []
+        self.lineage: List[str] = []
         self.hunger = 0
 
     def __str__(self) -> str:
