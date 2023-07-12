@@ -6,7 +6,7 @@ from typing import List, Tuple
 
 import pygame as pg
 
-from tsg import Cell
+from tsg import Cell, Dims, Point
 
 
 class BaseTSG(ABC):
@@ -20,7 +20,7 @@ class BaseTSG(ABC):
         surface: pg.Surface,
         name: str,
         cell: Cell,
-        cell_dims: Tuple[float, float],
+        cell_dims: Dims,
         color: pg.Color,
     ):
         self.manager = manager
@@ -34,8 +34,8 @@ class BaseTSG(ABC):
         self.dead = False  # is this instance alive or dead
         self.name = name
         self.cell_dims = cell_dims
-        self.pos = (0, 0)
-        self.size = cell_dims[0]
+        self.pos = Point()
+        self.size = cell_dims.w
         self.lineage: List[str] = []
         self.hunger = 0
 
@@ -62,8 +62,8 @@ class BaseTSG(ABC):
         Update the on screen positioin of a Thing
         """
         self.pos = (
-            (self.cell_dims[0] * ((self.cell.x * self.cell_dims[0]) // self.cell_dims[0]))
+            (self.cell_dims.w * ((self.cell.x * self.cell_dims.w // self.cell_dims.w))
             + self.size,
-            (self.cell_dims[1] * ((self.cell.y * self.cell_dims[1]) // self.cell_dims[1]))
+            (self.cell_dims.h * ((self.cell.y * self.cell_dims[1]) // self.cell_dims.h))
             + self.size,
         )

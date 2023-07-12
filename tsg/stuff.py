@@ -7,7 +7,7 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell
+from tsg import BaseTSG, Cell, Dims
 
 
 class Stuff(BaseTSG):
@@ -15,7 +15,7 @@ class Stuff(BaseTSG):
     Create a Stuff instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Tuple[float, float]):
+    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Dims):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
@@ -25,6 +25,12 @@ class Stuff(BaseTSG):
         self.update_position()
 
     def process(self, do_actions: bool):
+        """
+        Stuff does the following:
+        - eat
+        - spawn
+        - die
+        """
         super().process(do_actions)
 
         if do_actions:

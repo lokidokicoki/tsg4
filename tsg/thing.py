@@ -9,24 +9,52 @@ from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, Factors, Traits
+from tsg import BaseTSG, Cell, Factors, Point, Traits
 
 
-def draw_eye_spot(surface, color, vertex_count, facing, radius, eye_radius, position):
+def draw_eye_spot(
+    surface: pg.Surface,
+    color: pg.Color,
+    vertex_count: int,
+    facing: int,
+    radius: float,
+    eye_radius: float,
+    position: Point,
+):
+    """
+    Draw eye spot indicating direction the Thing is facing
+    """
     x, y = position
-    n, r = vertex_count, radius
 
-    pos = (x + r * cos(2 * pi * facing / n), y + r * sin(2 * pi * facing / n))
+    pos = (
+        x + radius * cos(2 * pi * facing / vertex_count),
+        y + radius * sin(2 * pi * facing / vertex_count),
+    )
     pg.draw.circle(surface, color, pos, eye_radius)
 
 
-def draw_regular_polygon(surface, color, vertex_count, radius, position, width=0):
-    n, r = vertex_count, radius
+def draw_regular_polygon(
+    surface: pg.Surface,
+    color: pg.Color,
+    vertex_count: int,
+    radius: float,
+    position: Point,
+    width=0,
+):
+    """
+    Draw a regular polygon.
+    """
     x, y = position
     pg.draw.polygon(
         surface,
         color,
-        [(x + r * cos(2 * pi * i / n), y + r * sin(2 * pi * i / n)) for i in range(n)],
+        [
+            (
+                x + radius * cos(2 * pi * i / vertex_count),
+                y + radius * sin(2 * pi * i / vertex_count),
+            )
+            for i in range(vertex_count)
+        ],
         width,
     )
 

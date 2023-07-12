@@ -5,6 +5,26 @@ from dataclasses import dataclass
 
 
 @dataclass
+class Point:
+    """
+    On screen point
+    """
+
+    x: float = 0.0
+    y: float = 0.0
+
+
+@dataclass
+class Dims:
+    """
+    Dimensions on screen
+    """
+
+    w: float = 0.0
+    h: float = 0.0
+
+
+@dataclass
 class Cell:
     """
     Defines a cell in the World
