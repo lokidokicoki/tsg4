@@ -62,8 +62,6 @@ class BaseTSG(ABC):
         Update the on screen positioin of a Thing
         """
         self.pos = (
-            (self.cell_dims.w * ((self.cell.x * self.cell_dims.w // self.cell_dims.w))
-            + self.size,
-            (self.cell_dims.h * ((self.cell.y * self.cell_dims[1]) // self.cell_dims.h))
-            + self.size,
+            (self.cell_dims.w * ((self.cell.x * self.cell_dims.w) // self.cell_dims.w)) + self.size,
+            (self.cell_dims.h * ((self.cell.y * self.cell_dims.h) // self.cell_dims.h)) + self.size,
         )

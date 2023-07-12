@@ -3,7 +3,6 @@ Stuff - this grows on the substrate of the World.
 It gains energy at a set rate, and will spawn new stuff in empty spaces next to it
 """
 
-from typing import Tuple
 
 import pygame as pg
 
@@ -19,7 +18,7 @@ class Stuff(BaseTSG):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
-        self.size = cell_dims[0] / 2
+        self.size = cell_dims.w / 2
         self.lifespan = 100
         self.spawn_threshold = 20  # amount of energy required to spawn
         self.update_position()

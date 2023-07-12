@@ -5,11 +5,10 @@ It gains energy from eating, and will spawn new Things in empty spaces next to i
 
 import random
 from math import cos, pi, sin
-from typing import Tuple
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, Factors, Point, Traits
+from tsg import BaseTSG, Cell, Dims, Factors, Point, Traits
 
 
 def draw_eye_spot(
@@ -24,11 +23,9 @@ def draw_eye_spot(
     """
     Draw eye spot indicating direction the Thing is facing
     """
-    x, y = position
-
     pos = (
-        x + radius * cos(2 * pi * facing / vertex_count),
-        y + radius * sin(2 * pi * facing / vertex_count),
+        position.x + radius * cos(2 * pi * facing / vertex_count),
+        position.y + radius * sin(2 * pi * facing / vertex_count),
     )
     pg.draw.circle(surface, color, pos, eye_radius)
 
@@ -44,14 +41,13 @@ def draw_regular_polygon(
     """
     Draw a regular polygon.
     """
-    x, y = position
     pg.draw.polygon(
         surface,
         color,
         [
             (
-                x + radius * cos(2 * pi * i / vertex_count),
-                y + radius * sin(2 * pi * i / vertex_count),
+                position.x + radius * cos(2 * pi * i / vertex_count),
+                position.y + radius * sin(2 * pi * i / vertex_count),
             )
             for i in range(vertex_count)
         ],
@@ -64,11 +60,11 @@ class Thing(BaseTSG):
     Create a Thing instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Dims):
         super().__init__(
             manager, surface, f"T{manager.counters['T']}", cell, cell_dims, pg.Color(100, 100, 100)
         )
-        self.size = cell_dims[0] / 2
+        self.size = cell_dims.w / 2
         self.update_position()
         self.lifespan = 600
         self.energy = 50

@@ -6,7 +6,7 @@ from typing import List, Optional, Set, Tuple, Type, Union
 
 import pygame as pg
 
-from tsg import Cell, Gack, Stuff, Thing, TSGConfig
+from tsg import Cell, Dims, Gack, Stuff, Thing, TSGConfig
 
 
 class CellContent:
@@ -63,7 +63,7 @@ class World:
     Manage all TSG instances
     """
 
-    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Tuple[float, float]):
+    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Dims):
         self.counters = {
             "T": 0,
             "S": 0,
@@ -241,13 +241,13 @@ class World:
         """
         Translate mouse position to a grid cell
         """
-        x = self.cell_dims[0] * (target[0] // self.cell_dims[0])
-        y = self.cell_dims[1] * (target[1] // self.cell_dims[1])
+        x = self.cell_dims.w * (target[0] // self.cell_dims.w)
+        y = self.cell_dims.w * (target[1] // self.cell_dims.h)
 
         if x > 0:
-            x /= self.cell_dims[0]
+            x /= self.cell_dims.w
         if y > 0:
-            y /= self.cell_dims[1]
+            y /= self.cell_dims.h
         target_cell = Cell(int(x), int(y))
         return target_cell
 

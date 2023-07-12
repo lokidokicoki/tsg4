@@ -1,8 +1,6 @@
-from typing import Tuple
-
 import pygame as pg
 
-from tsg import BaseTSG, Cell
+from tsg import BaseTSG, Cell, Dims
 
 
 class Gack(BaseTSG):
@@ -10,15 +8,15 @@ class Gack(BaseTSG):
     Gack!
     """
 
-    def __init__(self, manager, surface, cell: Cell, cell_dims: Tuple[float, float]):
+    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Dims):
         super().__init__(
             manager, surface, f"G{manager.counters['G']}", cell, cell_dims, pg.Color(0, 0, 100)
         )
         self.rect = (
-            cell.x * cell_dims[0],
-            cell.y * cell_dims[1],
-            cell_dims[0],
-            cell_dims[1],
+            cell.x * cell_dims.w,
+            cell.y * cell_dims.h,
+            cell_dims.w,
+            cell_dims.h,
         )
 
     def process(self, do_actions: bool):
