@@ -22,10 +22,7 @@ class Stuff(BaseTSG):
         self.size = cell_dims[0] / 2
         self.lifespan = 100
         self.spawn_threshold = 20  # amount of energy required to spawn
-        self.pos = (
-            (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
-            (cell_dims[1] * ((cell.y * cell_dims[1]) // cell_dims[1])) + self.size,
-        )
+        self.update_position()
 
     def process(self, do_actions: bool):
         super().process(do_actions)

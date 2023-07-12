@@ -235,18 +235,7 @@ class World:
         self.remove(thing.cell, "T")
         self.matrix[new_cell.x][new_cell.y].set(thing)
         thing.cell = new_cell
-        self.update_position(thing)
-
-    def update_position(self, klass: Union[Thing, Stuff, Gack]):
-        """
-        Update the on screen positioin of a Thing
-        """
-        klass.pos = (
-            (klass.cell_dims[0] * ((klass.cell.x * klass.cell_dims[0]) // klass.cell_dims[0]))
-            + klass.size,
-            (klass.cell_dims[1] * ((klass.cell.y * klass.cell_dims[1]) // klass.cell_dims[1]))
-            + klass.size,
-        )
+        thing.update_position()
 
     def get_grid_at_pos(self, target) -> Cell:
         """

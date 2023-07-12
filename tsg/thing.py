@@ -41,13 +41,10 @@ class Thing(BaseTSG):
             manager, surface, f"T{manager.counters['T']}", cell, cell_dims, pg.Color(100, 100, 100)
         )
         self.size = cell_dims[0] / 2
+        self.update_position()
         self.lifespan = 600
         self.energy = 50
         self.spawn_threshold = 250  # amount of energy required to spawn
-        self.pos = (
-            (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
-            (cell_dims[0] * ((cell.y * cell_dims[0]) // cell_dims[0])) + self.size,
-        )
         self.facing = random.randint(0, 7)
         self.eye_size = self.size * 0.1
         self.eye_color = pg.Color(200, 0, 0)

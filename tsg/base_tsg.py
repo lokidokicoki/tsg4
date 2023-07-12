@@ -1,6 +1,7 @@
 """
 Base class for TSG classes.
 """
+from abc import ABC, abstractmethod
 from typing import List, Tuple
 
 import pygame as pg
@@ -8,7 +9,7 @@ import pygame as pg
 from tsg import Cell
 
 
-class BaseTSG:
+class BaseTSG(ABC):
     """
     Base class for TSG classes.
     """
@@ -33,7 +34,7 @@ class BaseTSG:
         self.dead = False  # is this instance alive or dead
         self.name = name
         self.cell_dims = cell_dims
-        self.pos = None
+        self.pos = (0, 0)
         self.size = cell_dims[0]
         self.lineage: List[str] = []
         self.hunger = 0
@@ -44,12 +45,25 @@ class BaseTSG:
             f"age: {self.age}, energy: {self.energy}"
         )
 
+    @abstractmethod
     def draw(self):
         """
         Draw entity in the world.
         """
 
+    @abstractmethod
     def process(self, do_actions: bool):
         """
         Process entity actions
         """
+
+    def update_position(self):
+        """
+        Update the on screen positioin of a Thing
+        """
+        self.pos = (
+            (self.cell_dims[0] * ((self.cell.x * self.cell_dims[0]) // self.cell_dims[0]))
+            + self.size,
+            (self.cell_dims[1] * ((self.cell.y * self.cell_dims[1]) // self.cell_dims[1]))
+            + self.size,
+        )
