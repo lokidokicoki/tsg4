@@ -1,3 +1,6 @@
+"""
+Gack - hazards in the World
+"""
 import pygame as pg
 
 from tsg import BaseTSG, Cell, Dims

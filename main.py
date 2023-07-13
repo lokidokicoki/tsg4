@@ -7,19 +7,16 @@ from typing import List, Tuple
 import pygame as pg
 
 import plots
-from tsg import TSGConfig, World
+from tsg import Dims, TSGConfig, World
 
 TITLE = "TSG4"
 
 
-def evaluate_dims(resolution: Tuple[int, int], world: Tuple[int, int]) -> Tuple[float, float]:
+def evaluate_dims(resolution: Tuple[int, int], world: Tuple[int, int]) -> Dims:
     """
     Get base cell width and height base on resolution and world dimensions
     """
-    cell_width = resolution[0] / world[0]
-    cell_height = resolution[1] / world[1]
-
-    return (cell_width, cell_height)
+    return Dims(resolution[0] / world[0], resolution[1] / world[1])
 
 
 class Game:
@@ -99,10 +96,10 @@ class Game:
             for row in range(self.config.world_width):
                 for col in range(row % 2, self.config.world_height, 2):
                     rect = (
-                        row * self.cell_dims[0],
-                        col * self.cell_dims[1],
-                        self.cell_dims[0],
-                        self.cell_dims[1],
+                        row * self.cell_dims.w,
+                        col * self.cell_dims.h,
+                        self.cell_dims.w,
+                        self.cell_dims.h,
                     )
                     pg.draw.rect(self.surface, (40, 40, 40), rect)
 

@@ -2,7 +2,7 @@
 Base class for TSG classes.
 """
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List
 
 import pygame as pg
 
@@ -59,9 +59,9 @@ class BaseTSG(ABC):
 
     def update_position(self):
         """
-        Update the on screen positioin of a Thing
+        Update the on screen position of an entity
         """
-        self.pos = (
+        self.pos = Point(
             (self.cell_dims.w * ((self.cell.x * self.cell_dims.w) // self.cell_dims.w)) + self.size,
             (self.cell_dims.h * ((self.cell.y * self.cell_dims.h) // self.cell_dims.h)) + self.size,
         )

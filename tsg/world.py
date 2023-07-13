@@ -156,7 +156,7 @@ class World:
             self.counters["G"] += 1
             self.stats["G"] += 1
         else:
-            raise TypeError(f"Uknown entity type {entity}")
+            raise TypeError(f"Unknown entity type {entity}")
 
         self.matrix[cell.x][cell.y].set(entity)
         return entity

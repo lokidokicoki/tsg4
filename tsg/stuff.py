@@ -2,8 +2,6 @@
 Stuff - this grows on the substrate of the World.
 It gains energy at a set rate, and will spawn new stuff in empty spaces next to it
 """
-
-
 import pygame as pg
 
 from tsg import BaseTSG, Cell, Dims
@@ -77,4 +75,4 @@ class Stuff(BaseTSG):
             self.color = pg.Color(255, 0, 0)
 
     def draw(self):
-        pg.draw.circle(self.surface, self.color, self.pos, self.size)
+        pg.draw.circle(self.surface, self.color, (self.pos.x, self.pos.y), self.size)
