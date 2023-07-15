@@ -57,12 +57,25 @@ class TSGConfig:
 @dataclass
 class Factors:
     """
-    Factors affect a Things stats and traits
+    Factors affect a Things stats
 
     :param drift: mutation probabilty
+    :param speed: movement rate modifier
+    :param spawn: spawn probabilty
+    :param spin: spin limits on facing dir
+    :param feed: probability this Thing will feed
+    :param lifespan: modifies this Things max lifespan
+    :param fission: prefernce for spanwing by fission
+    :param fusion: preference for spawning bu fusion
+    :param hunger: modifier for hunger_threshold
+    :param thing: do you like cannabalism?
+    :param stuff: veggies? yes, them's nommable
+    :param no_gack: probability thing can handle no_gack
+    :param wet_gack: probability thing can handle wet_gack
+    :param dry_gack: probability thing can handle dry_gack
     """
 
-    drift: float = 0.0
+    drift: float = 0.005
     speed: float = 1.0
     spin: float = 1.0
     spawn: float = 1.0
@@ -80,6 +93,10 @@ class Factors:
 
 @dataclass
 class Traits:
+    """
+    Traits are the result of Stats modified by Factors
+    """
+
     no_gack: int = 1
     wet_gack: int = 0
     dry_gack: int = 0

@@ -98,9 +98,13 @@ class World:
 
         return next_free_cell
 
-    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> Cell:
+    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str = "X") -> Cell:
         """
         Translate facing to Cell, facing dir is 0 to 7 from right CW
+
+        :param facing_direction: 0 to 7 with 0 being East.
+        :param cell: current cell in the World
+        :param check_type: check if cell contains this type of entity. Default of 'X' doesn't exist
         """
         x = cell.x
         y = cell.y
@@ -136,13 +140,13 @@ class World:
         return Cell(cell.x, cell.y, False)
 
     def add(
-        self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False
+        self, cls: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False
     ):
         """
         Add entity to World at specified row and column
         """
 
-        entity = klass(self, self.surface, cell, self.cell_dims)
+        entity = cls(self, self.surface, cell, self.cell_dims)
         if is_root:
             self.lineages.add(("T0", entity.name))
         if isinstance(entity, Thing):
@@ -226,7 +230,8 @@ class World:
                     self.add(Stuff, Cell(x, y))
 
                 if can_place <= self.config.thing_chance:
-                    self.add(Thing, Cell(x, y), True)
+                    thing = self.add(Thing, Cell(x, y), True)
+                    # Thing.mutate(thing, thing, 0.005, True)
 
     def move(self, thing: Thing, new_cell: Cell):
         """

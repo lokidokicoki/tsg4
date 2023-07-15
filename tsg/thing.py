@@ -3,6 +3,7 @@ Thing - this can eat Stuff - or other Things
 It gains energy from eating, and will spawn new Things in empty spaces next to it
 """
 
+import dataclasses
 import random
 from math import cos, pi, sin
 
@@ -97,7 +98,7 @@ class Thing(BaseTSG):
         check is cell in facing direction is clear, if so move into it
         """
         if not self.has_moved:
-            if self.hunger > self.hunger_threshold:
+            if self.hunger > self.hunger_threshold * self.factors.hunger:
                 facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "S")
                 if facing_cell.is_free:
                     self.facing = random.randint(0, 7)
@@ -129,7 +130,7 @@ class Thing(BaseTSG):
         """
         Spawn a new Thing - simple fission
         """
-        if self.energy >= self.spawn_threshold:
+        if self.energy >= self.spawn_threshold * self.factors.spawn:
             next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
             if next_free_cell.is_free:
@@ -138,6 +139,9 @@ class Thing(BaseTSG):
                 new_thing.lineage.append(self.name)
                 self.manager.lineages.add((self.name, new_thing.name))
                 self.energy = self.energy / 2
+
+                # set up factors
+                # self.mutate(self, new_thing, self.factors.drift)
 
     def die(self, force: bool = False):
         """
@@ -154,3 +158,31 @@ class Thing(BaseTSG):
         draw_eye_spot(
             self.surface, self.eye_color, 8, self.facing, self.size, self.eye_size, self.pos
         )
+
+    @staticmethod
+    def mutate(parent, child, rate, force=False):
+        """
+        Mutate child factors at given rate
+        """
+        # copy parent factors to child
+        child.factors = dataclasses.replace(parent.factors)
+
+        for factor in dataclasses.fields(child.factors):
+            if factor.name == "drift":
+                continue
+
+            direction = random.choice([-1, 1])
+            new_value = None
+            if force:
+                new_value = random.uniform(-rate, rate)
+            elif random.random() <= rate:
+                new_value = getattr(parent.factors, factor.name) + (direction * rate)
+
+            if new_value is not None:
+                if new_value < 0:
+                    new_value = max(new_value, -4.0)
+                else:
+                    new_value = min(new_value, 2.0)
+
+                print(f"Mutate factor {factor.name}, {new_value}")
+                setattr(child.factors, factor.name, new_value)
