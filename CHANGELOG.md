@@ -1,3 +1,14 @@
+## v0.8.0 (2023-07-15)
+
+### Feat
+
+- rough implementation of factors. however, having thought it through, probably want a neural net for this.
+- add baseline Factors and Tratis, include instances in Thing class.
+
+### Fix
+
+- update lock and requirements files
+
 ## v0.7.0 (2023-07-10)
 
 ### Feat
