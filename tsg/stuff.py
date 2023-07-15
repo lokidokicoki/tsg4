@@ -2,12 +2,9 @@
 Stuff - this grows on the substrate of the World.
 It gains energy at a set rate, and will spawn new stuff in empty spaces next to it
 """
-
-from typing import Tuple
-
 import pygame as pg
 
-from tsg import BaseTSG, Cell
+from tsg import BaseTSG, Cell, Dims
 
 
 class Stuff(BaseTSG):
@@ -15,19 +12,22 @@ class Stuff(BaseTSG):
     Create a Stuff instance at a specified point in the World
     """
 
-    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Tuple[float, float]):
+    def __init__(self, manager, surface: pg.Surface, cell: Cell, cell_dims: Dims):
         super().__init__(
             manager, surface, f"S{manager.counters['S']}", cell, cell_dims, pg.Color(0, 10, 0)
         )
-        self.size = cell_dims[0] / 2
+        self.size = cell_dims.w / 2
         self.lifespan = 100
         self.spawn_threshold = 20  # amount of energy required to spawn
-        self.pos = (
-            (cell_dims[0] * ((cell.x * cell_dims[0]) // cell_dims[0])) + self.size,
-            (cell_dims[1] * ((cell.y * cell_dims[1]) // cell_dims[1])) + self.size,
-        )
+        self.update_position()
 
     def process(self, do_actions: bool):
+        """
+        Stuff does the following:
+        - eat
+        - spawn
+        - die
+        """
         super().process(do_actions)
 
         if do_actions:
@@ -75,4 +75,4 @@ class Stuff(BaseTSG):
             self.color = pg.Color(255, 0, 0)
 
     def draw(self):
-        pg.draw.circle(self.surface, self.color, self.pos, self.size)
+        pg.draw.circle(self.surface, self.color, (self.pos.x, self.pos.y), self.size)

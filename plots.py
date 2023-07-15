@@ -11,19 +11,19 @@ def draw_plot():
     """
     Draw a plot based on the TSG CSV data
     """
-    x = []
-    y1 = []
-    y2 = []
+    ticks = []
+    live_things = []
+    max_things = []
     with open("tsg.csv", mode="r", encoding="utf-8") as csvfile:
         lines = csv.DictReader(csvfile, delimiter=",")
 
         for row in lines:
-            x.append(int(row["tick"]))
-            y1.append(int(row["Live"]))
-            y2.append(int(row["Tmx"]))
+            ticks.append(int(row["tick"]))
+            live_things.append(int(row["Live"]))
+            max_things.append(int(row["Tmx"]))
 
-    plt.plot(x, y1, color="g", label="Alive")
-    plt.plot(x, y2, color="b", label="Max")
+    plt.plot(ticks, live_things, color="g", label="Alive")
+    plt.plot(ticks, max_things, color="b", label="Max")
     plt.xlabel("Ticks")
     plt.ylabel("Things")
     plt.title("Population change over time", fontsize=20)
@@ -32,6 +32,9 @@ def draw_plot():
 
 
 def draw_tree():
+    """
+    Draw ancestry graph
+    """
     tree = graphviz.Digraph("G", filename="ancestry.gv")
     tree.graph_attr["rankdir"] = "LR"
     tree.node("T0")

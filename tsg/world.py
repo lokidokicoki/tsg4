@@ -6,7 +6,7 @@ from typing import List, Optional, Set, Tuple, Type, Union
 
 import pygame as pg
 
-from tsg import Cell, Gack, Stuff, Thing, TSGConfig
+from tsg import Cell, Dims, Gack, Stuff, Thing, TSGConfig
 
 
 class CellContent:
@@ -63,7 +63,7 @@ class World:
     Manage all TSG instances
     """
 
-    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Tuple[float, float]):
+    def __init__(self, config: TSGConfig, surface: pg.Surface, cell_dims: Dims):
         self.counters = {
             "T": 0,
             "S": 0,
@@ -98,9 +98,13 @@ class World:
 
         return next_free_cell
 
-    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str) -> Cell:
+    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str = "X") -> Cell:
         """
         Translate facing to Cell, facing dir is 0 to 7 from right CW
+
+        :param facing_direction: 0 to 7 with 0 being East.
+        :param cell: current cell in the World
+        :param check_type: check if cell contains this type of entity. Default of 'X' doesn't exist
         """
         x = cell.x
         y = cell.y
@@ -136,13 +140,13 @@ class World:
         return Cell(cell.x, cell.y, False)
 
     def add(
-        self, klass: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False
+        self, cls: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False
     ):
         """
         Add entity to World at specified row and column
         """
 
-        entity = klass(self, self.surface, cell, self.cell_dims)
+        entity = cls(self, self.surface, cell, self.cell_dims)
         if is_root:
             self.lineages.add(("T0", entity.name))
         if isinstance(entity, Thing):
@@ -156,7 +160,7 @@ class World:
             self.counters["G"] += 1
             self.stats["G"] += 1
         else:
-            raise TypeError(f"Uknown entity type {entity}")
+            raise TypeError(f"Unknown entity type {entity}")
 
         self.matrix[cell.x][cell.y].set(entity)
         return entity
@@ -226,7 +230,8 @@ class World:
                     self.add(Stuff, Cell(x, y))
 
                 if can_place <= self.config.thing_chance:
-                    self.add(Thing, Cell(x, y), True)
+                    thing = self.add(Thing, Cell(x, y), True)
+                    # Thing.mutate(thing, thing, 0.005, True)
 
     def move(self, thing: Thing, new_cell: Cell):
         """
@@ -235,30 +240,19 @@ class World:
         self.remove(thing.cell, "T")
         self.matrix[new_cell.x][new_cell.y].set(thing)
         thing.cell = new_cell
-        self.update_position(thing)
-
-    def update_position(self, klass: Union[Thing, Stuff, Gack]):
-        """
-        Update the on screen positioin of a Thing
-        """
-        klass.pos = (
-            (klass.cell_dims[0] * ((klass.cell.x * klass.cell_dims[0]) // klass.cell_dims[0]))
-            + klass.size,
-            (klass.cell_dims[1] * ((klass.cell.y * klass.cell_dims[1]) // klass.cell_dims[1]))
-            + klass.size,
-        )
+        thing.update_position()
 
     def get_grid_at_pos(self, target) -> Cell:
         """
         Translate mouse position to a grid cell
         """
-        x = self.cell_dims[0] * (target[0] // self.cell_dims[0])
-        y = self.cell_dims[1] * (target[1] // self.cell_dims[1])
+        x = self.cell_dims.w * (target[0] // self.cell_dims.w)
+        y = self.cell_dims.w * (target[1] // self.cell_dims.h)
 
         if x > 0:
-            x /= self.cell_dims[0]
+            x /= self.cell_dims.w
         if y > 0:
-            y /= self.cell_dims[1]
+            y /= self.cell_dims.h
         target_cell = Cell(int(x), int(y))
         return target_cell
 
