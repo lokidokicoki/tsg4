@@ -9,7 +9,7 @@ from math import cos, pi, sin
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, Dims, Factors, Point, Traits
+from tsg import BaseTSG, Cell, Dims, Factors, Genome, Point, Traits
 
 
 def draw_eye_spot(
@@ -78,6 +78,7 @@ class Thing(BaseTSG):
         self.speed = 1
         self.factors = Factors()
         self.traits = Traits()
+        self.genome = Genome()
 
     def process(self, do_actions: bool):
         super().process(do_actions)
