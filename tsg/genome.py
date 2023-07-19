@@ -9,6 +9,12 @@ SENSOR = 1
 NEURON = 0
 ACTION = 1
 
+MAX_GENE_WEIGHT = 0xFF
+WEIGHT_DIVIDER = 0xFF
+WEIGHT_SHIFT = 0
+
+# weight shift is more important for neural weights
+
 
 class GeneType(Enum):
     SPEED = 1
@@ -29,7 +35,7 @@ class Gene:
         source_id: int = 0,
         sink_type: int = 0,
         sink_id: int = 0,
-        weight: int = 0xFFFF,
+        weight: int = MAX_GENE_WEIGHT,
     ):
         self.gene_type = gene_type
         self.source_type = source_type
@@ -39,11 +45,11 @@ class Gene:
         self.weight = weight
 
     def get_weight_as_float(self) -> float:
-        return self.weight / 8192.0
+        return self.weight / WEIGHT_DIVIDER
 
     @staticmethod
     def get_random_weight() -> int:
-        return random.randint(0, 0xFFFF) - 0x8000
+        return random.randint(0, MAX_GENE_WEIGHT) - WEIGHT_SHIFT
 
 
 class Genome:
