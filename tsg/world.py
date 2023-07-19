@@ -86,25 +86,29 @@ class World:
         self.max_height = len(self.matrix[0])
         self.lineages: Set[Tuple[str, str]] = set()
 
-    def get_next_free_cell(self, cell: Cell, check_type: str) -> Cell:
+    def get_next_free_cell(self, cell: Cell, check_type: str) -> Optional[CellContent]:
         """
         Find the next empty cell in the matrix starting mid left and moving clockwise
+        :param cell: current cell in the world
+        :param check_type: entities to avoid
+        :return: free cell coords or None if all occupied
         """
-        next_free_cell = Cell(cell.x, cell.y)
         for direction in range(0, 7):
-            next_free_cell = self.get_facing_cell(direction, cell, check_type)
-            if next_free_cell.is_free:
+            next_free_cell = self.get_facing_cell(direction, cell)
+
+            if next_free_cell and next_free_cell.get(check_type) is None:
                 break
 
         return next_free_cell
 
-    def get_facing_cell(self, facing_direction: int, cell: Cell, check_type: str = "X") -> Cell:
+    def get_facing_cell(self, facing_direction: int, cell: Cell) -> Optional[CellContent]:
         """
         Translate facing to Cell, facing dir is 0 to 7 from right CW
 
         :param facing_direction: 0 to 7 with 0 being East.
         :param cell: current cell in the World
         :param check_type: check if cell contains this type of entity. Default of 'X' doesn't exist
+        :return CellContent: cell contents at pos or None if out of bounds
         """
         x = cell.x
         y = cell.y
@@ -133,11 +137,11 @@ class World:
         if (
             0 <= x < self.max_width
             and 0 <= y < self.max_height
-            and self.matrix[x][y].get(check_type) is None
+            #            and self.matrix[x][y].get(check_type) is None
         ):
-            return Cell(x, y, True)
+            return self.matrix[x][y]
 
-        return Cell(cell.x, cell.y, False)
+        return None  # Cell(cell.x, cell.y, False)
 
     def add(
         self, cls: Union[Type[Gack], Type[Thing], Type[Stuff]], cell: Cell, is_root: bool = False

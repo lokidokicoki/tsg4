@@ -56,8 +56,8 @@ class Stuff(BaseTSG):
             # check for free adjacent cellsin manager
             next_free_cell = self.manager.get_next_free_cell(self.cell, "S")
 
-            if next_free_cell.is_free:
-                self.manager.add(Stuff, next_free_cell)
+            if next_free_cell:
+                self.manager.add(Stuff, next_free_cell.cell)
                 self.energy = int(self.energy / 2)
             else:
                 self.die(True)

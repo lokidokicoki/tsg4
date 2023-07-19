@@ -9,7 +9,7 @@ from math import cos, pi, sin
 
 import pygame as pg
 
-from tsg import BaseTSG, Cell, Dims, Factors, Genome, Point, Traits
+from tsg import BaseTSG, Cell, Dims, Factors, GeneType, Genome, Point, Traits
 
 
 def draw_eye_spot(
@@ -98,19 +98,18 @@ class Thing(BaseTSG):
         """
         check is cell in facing direction is clear, if so move into it
         """
+        spin_gene = self.genome.get_gene_by_type(GeneType.SPIN)
+        move_gene = self.genome.get_gene_by_type(GeneType.HUNGER)
         if not self.has_moved:
-            if self.hunger > self.hunger_threshold * self.factors.hunger:
-                facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "S")
-                if facing_cell.is_free:
+            facing_cell = self.manager.get_facing_cell(self.facing, self.cell)  # , "S")
+            # moving into barren territory
+            if self.hunger > self.hunger_threshold * move_gene.get_weight_as_float():
+                if facing_cell and facing_cell.get("S"):
                     self.facing = random.randint(0, 7)
                     self.hunger /= 5
 
-            facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "T")
-            if facing_cell.is_free:
-                facing_cell = self.manager.get_facing_cell(self.facing, self.cell, "G")
-
-            if facing_cell.is_free:
-                self.manager.move(self, facing_cell)
+            if facing_cell and not facing_cell.get("T") and not facing_cell.get("G"):
+                self.manager.move(self, facing_cell.cell)
             else:
                 self.facing = random.randint(0, 7)
             self.has_moved = True
@@ -134,15 +133,15 @@ class Thing(BaseTSG):
         if self.energy >= self.spawn_threshold * self.factors.spawn:
             next_free_cell = self.manager.get_next_free_cell(self.cell, "T")
 
-            if next_free_cell.is_free:
-                new_thing = self.manager.add(Thing, next_free_cell)
+            if next_free_cell:
+                new_thing = self.manager.add(Thing, next_free_cell.cell)
                 new_thing.lineage = self.lineage.copy()
                 new_thing.lineage.append(self.name)
                 self.manager.lineages.add((self.name, new_thing.name))
                 self.energy = self.energy / 2
 
                 # set up factors
-                # self.mutate(self, new_thing, self.factors.drift)
+                self.mutate(self, new_thing, self.factors.drift)
 
     def die(self, force: bool = False):
         """
