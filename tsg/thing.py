@@ -190,3 +190,7 @@ class Thing(BaseTSG):
                 rand_gene = child.genome.genes[random.randint(0, len(child.genome.genes) - 1)]
                 rand_gene.weight = rand_gene.weight ^ random.randint(0, 0xFF)
                 print(rand_gene)
+
+        values = child.genome.get_genotype()
+        print(values)
+        child.color = pg.Color(values[0], values[1], values[2])
