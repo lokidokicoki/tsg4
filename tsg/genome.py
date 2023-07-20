@@ -83,6 +83,17 @@ class Genome:
     def get_gene_by_type(self, gene_type: GeneType) -> Optional[Gene]:
         return next((x for x in self.genes if x.gene_type == gene_type), None)
 
+    @staticmethod
+    def get_value(a, b):
+        return ((a.weight + b.weight) / (2 * MAX_GENE_WEIGHT)) * MAX_GENE_WEIGHT
+
+    def get_genotype(self):
+        return (
+            int(self.get_value(self.genes[0], self.genes[1])),
+            int(self.get_value(self.genes[2], self.genes[3])),
+            int(self.get_value(self.genes[4], self.genes[5])),
+        )
+
 
 class NeuralNetwork:
     def __init__(self):
