@@ -33,6 +33,9 @@ class CellContent:
         else:
             raise TypeError(f"Uknown entity type {entity}")
 
+    def is_empty(self) -> bool:
+        return not (self.thing or self.stuff or self.gack)
+
     def get(self, check_type: str):
         """
         Get the specific entity in a grid cell
