@@ -85,6 +85,7 @@ class Thing(BaseTSG):
 
         if do_actions:
             self.move()
+            self.spin()
             self.eat()
             self.spawn()
             self.die()
@@ -98,20 +99,37 @@ class Thing(BaseTSG):
         """
         check is cell in facing direction is clear, if so move into it
         """
-        spin_gene = self.genome.get_gene_by_type(GeneType.SPIN)
-        move_gene = self.genome.get_gene_by_type(GeneType.HUNGER)
         if not self.has_moved:
+            speed_gene = self.genome.get_gene_by_type(GeneType.SPEED)
             facing_cell = self.manager.get_facing_cell(self.facing, self.cell)  # , "S")
-            # moving into barren territory
-            if self.hunger > self.hunger_threshold * move_gene.get_weight_as_float():
-                if facing_cell and facing_cell.get("S"):
-                    self.facing = random.randint(0, 7)
-                    self.hunger /= 5
 
-            if facing_cell and not facing_cell.get("T") and not facing_cell.get("G"):
-                self.manager.move(self, facing_cell.cell)
-            else:
-                self.facing = random.randint(0, 7)
+            if facing_cell:
+                if facing_cell.is_empty and self.hungry():
+                    self.spin()
+                    self.hunger /= 5
+                elif facing_cell.get("T") or facing_cell.get("G"):
+                    self.spin()
+                else:
+                    self.manager.move(self, facing_cell.cell)
+                    self.has_moved = True
+
+    def hungry(self):
+        hunger_gene = self.genome.get_gene_by_type(GeneType.HUNGER)
+        return self.hunger > self.hunger_threshold * hunger_gene.get_weight_as_float()
+
+    def spin(self):
+        if not self.has_moved:
+            spin_rate_gene = self.genome.get_gene_by_type(GeneType.SPIN_RATE)
+            spin_cw_gene = self.genome.get_gene_by_type(GeneType.SPIN_CW)
+            spin_ccw_gene = self.genome.get_gene_by_type(GeneType.SPIN_CCW)
+            max_spin = int(7 * spin_rate_gene.get_weight_as_float())
+
+            direction = random.random()
+            if direction < spin_cw_gene.get_weight_as_float():
+                self.facing = (self.facing + random.randint(0, max_spin)) % 8
+            elif direction < spin_ccw_gene.get_weight_as_float():
+                self.facing = (self.facing - random.randint(0, max_spin)) + 8
+
             self.has_moved = True
 
     def eat(self):
@@ -141,7 +159,7 @@ class Thing(BaseTSG):
                 self.energy = self.energy / 2
 
                 # set up factors
-                self.mutate(self, new_thing, self.factors.drift)
+                self.mutate(self, new_thing, self.manager.config.mutation_rate)
 
     def die(self, force: bool = False):
         """
@@ -160,29 +178,15 @@ class Thing(BaseTSG):
         )
 
     @staticmethod
-    def mutate(parent, child, rate, force=False):
+    def mutate(parent, child, mutation_rate, force=False):
         """
         Mutate child factors at given rate
         """
         # copy parent factors to child
-        child.factors = dataclasses.replace(parent.factors)
+        for idx, gene in enumerate(parent.genome.genes):
+            child.genome.genes[idx].weight = gene.weight
 
-        for factor in dataclasses.fields(child.factors):
-            if factor.name == "drift":
-                continue
-
-            direction = random.choice([-1, 1])
-            new_value = None
-            if force:
-                new_value = random.uniform(-rate, rate)
-            elif random.random() <= rate:
-                new_value = getattr(parent.factors, factor.name) + (direction * rate)
-
-            if new_value is not None:
-                if new_value < 0:
-                    new_value = max(new_value, -4.0)
-                else:
-                    new_value = min(new_value, 2.0)
-
-                print(f"Mutate factor {factor.name}, {new_value}")
-                setattr(child.factors, factor.name, new_value)
+            if mutation_rate <= random.random():
+                rand_gene = child.genome.genes[random.randint(0, len(child.genome.genes) - 1)]
+                rand_gene.weight = rand_gene.weight ^ random.randint(0, 0xFF)
+                print(rand_gene)
