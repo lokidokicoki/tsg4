@@ -52,6 +52,7 @@ class TSGConfig:
     gack_chance: float
     gack_size: int
     thing_chance: float
+    mutation_rate: float
 
 
 @dataclass

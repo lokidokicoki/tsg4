@@ -150,6 +150,7 @@ if __name__ == "__main__":
         _config.getfloat("tsg", "gack_chance"),
         _config.getint("tsg", "gack_size"),
         _config.getfloat("tsg", "thing_chance"),
+        _config.getfloat("tsg", "mutation_rate"),
     )
     game = Game(_tsg_config)
     game.main()
