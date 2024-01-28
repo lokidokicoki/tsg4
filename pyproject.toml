@@ -24,7 +24,7 @@ commitizen = "^3.5.2"
 data-science-types = "^0.2.23"
 
 [tool.black]
-line_length = 100
+line-length = 100
 
 [tool.pylint]
 max-line-length=100
@@ -39,4 +39,3 @@ version_files = [
     "pyproject.toml:version"
 ]
 tag_format = "v$version"
-
